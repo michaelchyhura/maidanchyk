@@ -1,21 +1,20 @@
-import { useRouter } from "next/router";
 import { Button, useToast } from "@maidanchyk/ui";
 import { z } from "zod";
 import Link from "next/link";
-import { UserRole } from "@maidanchyk/prisma";
-import { trpc } from "../../../server/trpc";
-import { AuthLayout } from "../../../widgets/layout";
-import { SignUpForm, signUpSchema } from "../../../features/sign-up-form";
+import { SignInForm, signInSchema } from "../../features/sign-in-form";
+import { AuthLayout } from "../../widgets/layout";
+import { trpc } from "../../server/trpc";
+import { useRouter } from "next/router";
 
-export default function BusinessSignUp() {
+export default function BusinessSignIn() {
   const router = useRouter();
   const { toast } = useToast();
 
-  const { mutateAsync: signUp } = trpc.auth.signUp.useMutation();
+  const { mutateAsync: signIn } = trpc.auth.signIn.useMutation();
 
-  const handleSubmit = async (values: z.infer<typeof signUpSchema>) => {
+  const handleSubmit = async (values: z.infer<typeof signInSchema>) => {
     try {
-      await signUp({ ...values, role: UserRole.BUSINESS });
+      await signIn(values);
 
       router.push("/");
     } catch (error) {
@@ -31,21 +30,19 @@ export default function BusinessSignUp() {
           src="https://tailwindui.com/img/logos/mark.svg?color=zink&shade=600"
           alt="Maidanchyk"
         />
-        <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          Create new business account
-        </h2>
+        <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign in</h2>
         <p className="mt-2 text-sm leading-6 text-gray-500">
-          Already a member?{" "}
+          Don't have an account?{" "}
           <Link
-            href="/auth/sign-in"
+            href="/auth/sign-up"
             className="font-semibold text-indigo-600 hover:text-indigo-500">
-            Sign in
+            Sign up
           </Link>
         </p>
       </div>
 
       <div className="mt-6">
-        <SignUpForm onSubmit={handleSubmit} />
+        <SignInForm onSubmit={handleSubmit} />
 
         <div className="mt-6">
           <div className="relative">

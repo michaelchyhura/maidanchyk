@@ -1,20 +1,21 @@
+import { useRouter } from "next/router";
 import { Button, useToast } from "@maidanchyk/ui";
 import { z } from "zod";
 import Link from "next/link";
-import { SignInForm, signInSchema } from "../../../features/sign-in-form";
-import { AuthLayout } from "../../../widgets/layout";
+import { UserRole } from "@maidanchyk/prisma";
 import { trpc } from "../../../server/trpc";
-import { useRouter } from "next/router";
+import { AuthLayout } from "../../../widgets/layout";
+import { SignUpForm, signUpSchema } from "../../../features/sign-up-form";
 
-export default function BusinessSignIn() {
+export default function BusinessSignUp() {
   const router = useRouter();
   const { toast } = useToast();
 
-  const { mutateAsync: signIn } = trpc.auth.signIn.useMutation();
+  const { mutateAsync: signUp } = trpc.auth.signUp.useMutation();
 
-  const handleSubmit = async (values: z.infer<typeof signInSchema>) => {
+  const handleSubmit = async (values: z.infer<typeof signUpSchema>) => {
     try {
-      await signIn(values);
+      await signUp({ ...values, role: UserRole.CLIENT });
 
       router.push("/");
     } catch (error) {
@@ -30,19 +31,29 @@ export default function BusinessSignIn() {
           src="https://tailwindui.com/img/logos/mark.svg?color=zink&shade=600"
           alt="Maidanchyk"
         />
-        <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign in</h2>
+        <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          Create new account
+        </h2>
         <p className="mt-2 text-sm leading-6 text-gray-500">
-          Don't have an account?{" "}
+          Need to create a business account?{" "}
           <Link
             href="/auth/sign-up/business"
             className="font-semibold text-indigo-600 hover:text-indigo-500">
-            Sign up
+            Sign up as business
+          </Link>
+        </p>
+        <p className="mt-2 text-sm leading-6 text-gray-500">
+          Already a member?{" "}
+          <Link
+            href="/auth/sign-in"
+            className="font-semibold text-indigo-600 hover:text-indigo-500">
+            Sign in
           </Link>
         </p>
       </div>
 
       <div className="mt-6">
-        <SignInForm onSubmit={handleSubmit} />
+        <SignUpForm onSubmit={handleSubmit} />
 
         <div className="mt-6">
           <div className="relative">
