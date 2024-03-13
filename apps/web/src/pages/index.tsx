@@ -23,6 +23,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       name: true,
       email: true,
       photo: true,
+      phone: true,
+      telegram: true,
       role: true,
     },
   });

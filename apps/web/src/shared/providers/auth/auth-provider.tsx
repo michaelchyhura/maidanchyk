@@ -2,7 +2,7 @@ import { ReactNode, createContext, useContext } from "react";
 import { User } from "@maidanchyk/prisma";
 
 export type AuthContext = {
-  user: Pick<User, "id" | "email" | "name" | "photo" | "role"> | null;
+  user: Pick<User, "id" | "email" | "name" | "photo" | "telegram" | "phone" | "role"> | null;
 };
 
 const Context = createContext<AuthContext>({} as AuthContext);
@@ -12,7 +12,7 @@ export const useAuth = () => {
 };
 
 type Props = {
-  user: Pick<User, "id" | "email" | "name" | "photo" | "role"> | null;
+  user: Pick<User, "id" | "email" | "name" | "photo" | "telegram" | "phone" | "role"> | null;
   children: ReactNode;
 };
 

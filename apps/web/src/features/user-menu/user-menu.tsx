@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -20,10 +21,10 @@ export const UserMenu = () => {
   const router = useRouter();
   const { user } = useAuth();
 
-  const { mutateAsync: logout } = trpc.auth.logout.useMutation();
+  const { mutateAsync: signOut } = trpc.auth.signOut.useMutation();
 
-  const handleLogout = async () => {
-    await logout();
+  const handleSignOut = async () => {
+    await signOut();
 
     router.push("/auth/sign-in");
   };
@@ -51,15 +52,17 @@ export const UserMenu = () => {
         <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <Settings className="mr-2 h-4 w-4" />
-            <span>Settings</span>
+          <DropdownMenuItem asChild>
+            <Link href="/settings">
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Settings</span>
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem onClick={handleLogout}>
+        <DropdownMenuItem onClick={handleSignOut}>
           <LogOut className="mr-2 h-4 w-4" />
           <span>Sign Out</span>
         </DropdownMenuItem>

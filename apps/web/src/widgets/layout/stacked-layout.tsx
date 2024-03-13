@@ -21,7 +21,7 @@ export const StackedLayout = ({ title, children }: Props) => {
         </header>
 
         <main>
-          <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">{children}</div>
+          <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">{children}</div>
         </main>
       </div>
     </div>

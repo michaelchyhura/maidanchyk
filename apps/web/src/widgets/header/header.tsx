@@ -16,7 +16,7 @@ const navigation = [
 
 const userNavigation = [
   // { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
+  { name: "Settings", href: "/settings" },
   { name: "Sign Out", href: "#" },
 ];
 
@@ -24,10 +24,10 @@ export const Header = () => {
   const router = useRouter();
   const { user } = useAuth();
 
-  const { mutateAsync: logout } = trpc.auth.logout.useMutation();
+  const { mutateAsync: signOut } = trpc.auth.signOut.useMutation();
 
-  const handleLogout = async () => {
-    await logout();
+  const handleSignOut = async () => {
+    await signOut();
 
     router.push("/auth/sign-in");
   };
