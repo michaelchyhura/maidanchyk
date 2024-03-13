@@ -17,6 +17,9 @@
   },
   "name": "maidanchyk",
   "packageManager": "yarn@1.22.19",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "workspaces": [
     "apps/*",
     "packages/*"
