@@ -9,12 +9,9 @@ export const auth = t.router({
   signUp: publicProcedure
     .input(
       z.object({
-        firstName: z.string(),
-        lastName: z.string(),
         email: z.string().email(),
-        phone: z.string().regex(new RegExp("^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$")),
         password: z.string().min(6),
-        role: z.enum([UserRole.CLIENT, UserRole.BUSINESS]),
+        role: z.enum([UserRole.PLAYER, UserRole.COURT_OWNER]),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -22,8 +19,6 @@ export const auth = t.router({
       const session = await getSession(ctx.req, ctx.res);
 
       const workosUser = await workos.userManagement.createUser({
-        firstName: input.firstName,
-        lastName: input.lastName,
         email: input.email,
         password: input.password,
         emailVerified: true,
@@ -31,12 +26,8 @@ export const auth = t.router({
 
       const user = await ctx.prisma.user.create({
         data: {
-          firstName: input.firstName,
-          lastName: input.lastName,
-          givenName: `${input.firstName} ${input.lastName}`,
           email: input.email,
           emailVerified: true,
-          phone: input.phone,
           workosId: workosUser.id,
           role: input.role,
         },

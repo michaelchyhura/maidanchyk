@@ -7,11 +7,14 @@ import {
   FormLabel,
   FormMessage,
   Input,
+  RadioGroup,
+  RadioGroupItem,
 } from "@maidanchyk/ui";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { signUpSchema } from "./lib/validation";
+import { UserRole } from "@maidanchyk/prisma";
 
 type Props = {
   onSubmit: (values: z.infer<typeof signUpSchema>) => Promise<void>;
@@ -21,48 +24,14 @@ export const SignUpForm = ({ onSubmit }: Props) => {
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
       email: "",
-      phone: "",
       password: "",
-      passwordConfirmation: "",
     },
   });
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <div className="grid grid-cols-2 space-x-4">
-          <FormField
-            control={form.control}
-            name="firstName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>First Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Jon" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="lastName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Last Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Doe" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
         <FormField
           control={form.control}
           name="email"
@@ -71,20 +40,6 @@ export const SignUpForm = ({ onSubmit }: Props) => {
               <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input placeholder="jon.doe@gmail.com" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phone Number</FormLabel>
-              <FormControl>
-                <Input type="phone" placeholder="+919367788755" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -107,12 +62,28 @@ export const SignUpForm = ({ onSubmit }: Props) => {
 
         <FormField
           control={form.control}
-          name="passwordConfirmation"
+          name="role"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirm Password</FormLabel>
+            <FormItem className="space-y-2">
               <FormControl>
-                <Input type="password" {...field} />
+                <RadioGroup onValueChange={field.onChange} className="flex flex-col space-y-1">
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value={UserRole.COURT_OWNER} />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      I'm court owner - looking to host a court
+                    </FormLabel>
+                  </FormItem>
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value={UserRole.PLAYER} />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      I'm player - looking for a court or a team
+                    </FormLabel>
+                  </FormItem>
+                </RadioGroup>
               </FormControl>
               <FormMessage />
             </FormItem>

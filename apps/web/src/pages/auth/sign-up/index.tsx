@@ -15,7 +15,7 @@ export default function BusinessSignUp() {
 
   const handleSubmit = async (values: z.infer<typeof signUpSchema>) => {
     try {
-      await signUp({ ...values, role: UserRole.CLIENT });
+      await signUp(values);
 
       router.push("/");
     } catch (error) {
@@ -34,14 +34,6 @@ export default function BusinessSignUp() {
         <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-gray-900">
           Create new account
         </h2>
-        <p className="mt-2 text-sm leading-6 text-gray-500">
-          Need to create a business account?{" "}
-          <Link
-            href="/auth/sign-up/business"
-            className="font-semibold text-indigo-600 hover:text-indigo-500">
-            Sign up as business
-          </Link>
-        </p>
         <p className="mt-2 text-sm leading-6 text-gray-500">
           Already a member?{" "}
           <Link

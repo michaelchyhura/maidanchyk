@@ -1,21 +1,35 @@
-import { Button } from "@maidanchyk/ui";
-import { trpc } from "../server/trpc";
-import { useRouter } from "next/router";
+import { GetServerSideProps } from "next";
+import { prisma } from "@maidanchyk/prisma";
+import { StackedLayout } from "../widgets/layout";
+import { getSession } from "../shared/lib/session";
 
 export default function Dashboard() {
-  const router = useRouter();
-
-  const { mutateAsync: logout } = trpc.auth.logout.useMutation();
-
-  const handleLogout = async () => {
-    await logout();
-    router.push("/auth/sign-in");
-  };
-
-  return (
-    <div>
-      Dashboard
-      <Button onClick={handleLogout}>Logout</Button>
-    </div>
-  );
+  return <StackedLayout title="Dashboard">Dashboard</StackedLayout>;
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getSession(ctx.req, ctx.res);
+
+  if (!session.userId) {
+    return { props: {} };
+  }
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: session.userId,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      photo: true,
+      role: true,
+    },
+  });
+
+  return {
+    props: {
+      user,
+    },
+  };
+};
