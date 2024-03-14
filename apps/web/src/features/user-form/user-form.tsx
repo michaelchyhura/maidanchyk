@@ -7,32 +7,48 @@ import {
   FormLabel,
   FormMessage,
   Input,
+  useToast,
 } from "@maidanchyk/ui";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { userSchema } from "./lib/validation";
 import { useAuth } from "../../shared/providers/auth";
+import { trpc } from "../../server/trpc";
 
-type Props = {
-  onSubmit: (values: z.infer<typeof userSchema>) => Promise<void>;
-};
+export const UserForm = () => {
+  const { user, refetch } = useAuth();
+  const { toast } = useToast();
 
-export const UserForm = ({ onSubmit }: Props) => {
-  const { user } = useAuth();
+  const { mutateAsync: updateUser } = trpc.user.update.useMutation();
 
   const form = useForm<z.infer<typeof userSchema>>({
     resolver: zodResolver(userSchema),
     defaultValues: {
-      name: user?.name || '',
-      phone: user?.phone || '',
-      telegram: user?.telegram || '',
+      name: user?.name || "",
+      phone: user?.phone || "",
+      telegram: user?.telegram || "",
     },
   });
 
+  const handleSubmit = async (values: z.infer<typeof userSchema>) => {
+    try {
+      await updateUser({
+        name: values.name || null,
+        phone: values.phone || null,
+        telegram: values.telegram || null,
+      });
+      await refetch();
+
+      toast({ title: "Profile successfully updated" });
+    } catch (error) {
+      toast({ title: "Something went wrong. Please try again", variant: "destructive" });
+    }
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="name"

@@ -1,8 +1,12 @@
 import { ReactNode, createContext, useContext } from "react";
 import { User } from "@maidanchyk/prisma";
+import { trpc } from "../../../server/trpc";
+
+type UserProfile = Pick<User, "id" | "email" | "name" | "photo" | "telegram" | "phone" | "role">;
 
 export type AuthContext = {
-  user: Pick<User, "id" | "email" | "name" | "photo" | "telegram" | "phone" | "role"> | null;
+  user: UserProfile | null;
+  refetch: () => Promise<any>;
 };
 
 const Context = createContext<AuthContext>({} as AuthContext);
@@ -12,14 +16,17 @@ export const useAuth = () => {
 };
 
 type Props = {
-  user: Pick<User, "id" | "email" | "name" | "photo" | "telegram" | "phone" | "role"> | null;
+  user: UserProfile | null;
   children: ReactNode;
 };
 
-export function AuthProvider({ user, children }: Props) {
+export function AuthProvider(props: Props) {
+  const { data: user, refetch } = trpc.auth.me.useQuery(undefined, { enabled: false });
+
   const value = {
-    user,
+    user: user ?? props.user,
+    refetch,
   };
 
-  return <Context.Provider value={value}>{children}</Context.Provider>;
+  return <Context.Provider value={value}>{props.children}</Context.Provider>;
 }

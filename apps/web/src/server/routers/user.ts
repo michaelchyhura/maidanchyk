@@ -7,8 +7,9 @@ const update = protectedProcedure
   .input(
     z.object({
       name: z.string().nullish(),
-      phone: z.string().regex(PHONE_REG_EXP, { message: "Invalid phone number" }).nullable(),
-      telegram: z.string().url({ message: "Invalid URL" }).nullable(),
+      phone: z.string().regex(PHONE_REG_EXP, { message: "Invalid phone number" }).nullish(),
+      telegram: z.string().url({ message: "Invalid URL" }).nullish(),
+      photo: z.string().nullish(),
     }),
   )
   .mutation(async ({ ctx, input }) => {
