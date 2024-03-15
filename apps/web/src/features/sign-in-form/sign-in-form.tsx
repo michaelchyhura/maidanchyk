@@ -2,6 +2,7 @@ import {
   Button,
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -11,6 +12,7 @@ import {
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import Link from "next/link";
 import { signInSchema } from "./lib/validation";
 
 type Props = {
@@ -52,6 +54,13 @@ export const SignInForm = ({ onSubmit }: Props) => {
               <FormControl>
                 <Input type="password" {...field} />
               </FormControl>
+              <FormDescription>
+                <Link
+                  href="/auth/forgot-password"
+                  className="mt-2 text-sm font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                  Forgot Password?
+                </Link>
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
