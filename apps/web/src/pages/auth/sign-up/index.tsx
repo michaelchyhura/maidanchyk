@@ -1,28 +1,9 @@
-import { useRouter } from "next/router";
-import { Button, useToast } from "@maidanchyk/ui";
-import { z } from "zod";
+import { Button } from "@maidanchyk/ui";
 import Link from "next/link";
-import { UserRole } from "@maidanchyk/prisma";
-import { trpc } from "../../../server/trpc";
 import { AuthLayout } from "../../../widgets/layout";
-import { SignUpForm, signUpSchema } from "../../../features/sign-up-form";
+import { SignUpForm } from "../../../features/sign-up-form";
 
-export default function BusinessSignUp() {
-  const router = useRouter();
-  const { toast } = useToast();
-
-  const { mutateAsync: signUp } = trpc.auth.signUp.useMutation();
-
-  const handleSubmit = async (values: z.infer<typeof signUpSchema>) => {
-    try {
-      await signUp(values);
-
-      router.push("/");
-    } catch (error) {
-      toast({ title: "Something went wrong. Please try again", variant: "destructive" });
-    }
-  };
-
+export default function SignUp() {
   return (
     <AuthLayout>
       <div>
@@ -45,7 +26,7 @@ export default function BusinessSignUp() {
       </div>
 
       <div className="mt-6">
-        <SignUpForm onSubmit={handleSubmit} />
+        <SignUpForm />
 
         <div className="mt-6">
           <div className="relative">

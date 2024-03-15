@@ -8,18 +8,22 @@ import {
   FormLabel,
   FormMessage,
   Input,
+  useToast,
 } from "@maidanchyk/ui";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { signInSchema } from "./lib/validation";
+import { trpc } from "../../server/trpc";
 
-type Props = {
-  onSubmit: (values: z.infer<typeof signInSchema>) => Promise<void>;
-};
+export const SignInForm = () => {
+  const router = useRouter();
+  const { toast } = useToast();
 
-export const SignInForm = ({ onSubmit }: Props) => {
+  const { mutateAsync: signIn } = trpc.auth.signIn.useMutation();
+
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -28,9 +32,19 @@ export const SignInForm = ({ onSubmit }: Props) => {
     },
   });
 
+  const handleSubmit = async (values: z.infer<typeof signInSchema>) => {
+    try {
+      await signIn(values);
+
+      router.push("/");
+    } catch (error) {
+      toast({ title: "Something went wrong. Please try again", variant: "destructive" });
+    }
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="email"

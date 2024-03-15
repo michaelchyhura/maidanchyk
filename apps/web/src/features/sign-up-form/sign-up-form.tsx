@@ -9,18 +9,22 @@ import {
   Input,
   RadioGroup,
   RadioGroupItem,
+  useToast,
 } from "@maidanchyk/ui";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { signUpSchema } from "./lib/validation";
+import { useRouter } from "next/router";
 import { UserRole } from "@maidanchyk/prisma";
+import { signUpSchema } from "./lib/validation";
+import { trpc } from "../../server/trpc";
 
-type Props = {
-  onSubmit: (values: z.infer<typeof signUpSchema>) => Promise<void>;
-};
+export const SignUpForm = () => {
+  const router = useRouter();
+  const { toast } = useToast();
 
-export const SignUpForm = ({ onSubmit }: Props) => {
+  const { mutateAsync: signUp } = trpc.auth.signUp.useMutation();
+
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -29,9 +33,19 @@ export const SignUpForm = ({ onSubmit }: Props) => {
     },
   });
 
+  const handleSubmit = async (values: z.infer<typeof signUpSchema>) => {
+    try {
+      await signUp(values);
+
+      router.push("/");
+    } catch (error) {
+      toast({ title: "Something went wrong. Please try again", variant: "destructive" });
+    }
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="email"

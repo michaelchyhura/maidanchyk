@@ -1,27 +1,9 @@
-import { Button, useToast } from "@maidanchyk/ui";
-import { z } from "zod";
+import { Button } from "@maidanchyk/ui";
 import Link from "next/link";
-import { SignInForm, signInSchema } from "../../features/sign-in-form";
+import { SignInForm } from "../../features/sign-in-form";
 import { AuthLayout } from "../../widgets/layout";
-import { trpc } from "../../server/trpc";
-import { useRouter } from "next/router";
 
-export default function BusinessSignIn() {
-  const router = useRouter();
-  const { toast } = useToast();
-
-  const { mutateAsync: signIn } = trpc.auth.signIn.useMutation();
-
-  const handleSubmit = async (values: z.infer<typeof signInSchema>) => {
-    try {
-      await signIn(values);
-
-      router.push("/");
-    } catch (error) {
-      toast({ title: "Something went wrong. Please try again", variant: "destructive" });
-    }
-  };
-
+export default function SignIn() {
   return (
     <AuthLayout>
       <div>
@@ -42,7 +24,7 @@ export default function BusinessSignIn() {
       </div>
 
       <div className="mt-6">
-        <SignInForm onSubmit={handleSubmit} />
+        <SignInForm />
 
         <div className="mt-6">
           <div className="relative">
