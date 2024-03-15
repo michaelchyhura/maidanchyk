@@ -1,9 +1,8 @@
 import { z } from "zod";
-import WorkOS from "@workos-inc/node";
+import WorkOS, { GenericServerException } from "@workos-inc/node";
 import { UserRole } from "@maidanchyk/prisma";
 import { protectedProcedure, publicProcedure } from "../procedures";
 import { t } from "../instance";
-import { getSession } from "../../shared/lib/session";
 import { getAppUrl } from "../../shared/lib/urls";
 
 const signUp = publicProcedure
@@ -16,18 +15,17 @@ const signUp = publicProcedure
   )
   .mutation(async ({ ctx, input }) => {
     const workos = new WorkOS(process.env.WORKOS_API_KEY);
-    const session = await getSession(ctx.req, ctx.res);
 
     const workosUser = await workos.userManagement.createUser({
       email: input.email,
       password: input.password,
-      emailVerified: true,
     });
+
+    await workos.userManagement.sendVerificationEmail({ userId: workosUser.id });
 
     const user = await ctx.prisma.user.create({
       data: {
         email: input.email,
-        emailVerified: true,
         workosId: workosUser.id,
         role: input.role,
       },
@@ -36,11 +34,12 @@ const signUp = publicProcedure
       },
     });
 
-    session.isAuthenticated = true;
-    session.userId = user.id;
-    session.createdAt = new Date().toISOString();
+    ctx.session.isAuthenticated = true;
+    ctx.session.emailVerified = workosUser.emailVerified;
+    ctx.session.userId = user.id;
+    ctx.session.createdAt = new Date().toISOString();
 
-    await session.save();
+    await ctx.session.save();
 
     return user;
   });
@@ -54,30 +53,61 @@ const signIn = publicProcedure
   )
   .mutation(async ({ ctx, input }) => {
     const workos = new WorkOS(process.env.WORKOS_API_KEY);
-    const session = await getSession(ctx.req, ctx.res);
 
-    const { user: workosUser } = await workos.userManagement.authenticateWithPassword({
-      email: input.email,
-      password: input.password,
-      clientId: process.env.WORKOS_CLIENT_ID!,
-    });
+    try {
+      const { user: workosUser } = await workos.userManagement.authenticateWithPassword({
+        email: input.email,
+        password: input.password,
+        clientId: process.env.WORKOS_CLIENT_ID!,
+      });
 
-    const user = await ctx.prisma.user.findUniqueOrThrow({
-      where: {
-        workosId: workosUser.id,
-      },
-      select: {
-        id: true,
-      },
-    });
+      console.log("user", workosUser);
 
-    session.isAuthenticated = true;
-    session.userId = user.id;
-    session.createdAt = new Date().toISOString();
+      const user = await ctx.prisma.user.findUniqueOrThrow({
+        where: {
+          workosId: workosUser.id,
+        },
+        select: {
+          id: true,
+        },
+      });
 
-    await session.save();
+      ctx.session.isAuthenticated = true;
+      ctx.session.emailVerified = workosUser.emailVerified;
+      ctx.session.userId = user.id;
+      ctx.session.createdAt = new Date().toISOString();
 
-    return user;
+      await ctx.session.save();
+
+      return user;
+    } catch (error) {
+      if (error instanceof GenericServerException) {
+        if (error.message === "Email ownership must be verified before authentication.") {
+          const user = await ctx.prisma.user.findUniqueOrThrow({
+            where: {
+              email: input.email,
+            },
+            select: {
+              id: true,
+              workosId: true,
+            },
+          });
+
+          await workos.userManagement.sendVerificationEmail({ userId: user.workosId });
+
+          ctx.session.isAuthenticated = true;
+          ctx.session.emailVerified = false;
+          ctx.session.userId = user.id;
+          ctx.session.createdAt = new Date().toISOString();
+
+          await ctx.session.save();
+
+          return user;
+        }
+      }
+
+      throw error;
+    }
   });
 
 const signOut = protectedProcedure.mutation(async ({ ctx }) => {
@@ -127,7 +157,6 @@ const resetPassword = publicProcedure
   )
   .mutation(async ({ ctx, input }) => {
     const workos = new WorkOS(process.env.WORKOS_API_KEY);
-    const session = await getSession(ctx.req, ctx.res);
 
     const { user: workosUser } = await workos.userManagement.resetPassword({
       token: input.token,
@@ -149,13 +178,69 @@ const resetPassword = publicProcedure
       },
     });
 
-    session.isAuthenticated = true;
-    session.userId = user.id;
-    session.createdAt = new Date().toISOString();
+    ctx.session.isAuthenticated = true;
+    ctx.session.emailVerified = workosUser.emailVerified;
+    ctx.session.userId = user.id;
+    ctx.session.createdAt = new Date().toISOString();
 
-    await session.save();
+    await ctx.session.save();
 
     return user;
   });
 
-export const auth = t.router({ signUp, signIn, signOut, me, forgotPassword, resetPassword });
+const sendVerificationEmail = protectedProcedure.mutation(async ({ ctx }) => {
+  const workos = new WorkOS(process.env.WORKOS_API_KEY);
+
+  const user = await ctx.prisma.user.findUniqueOrThrow({
+    where: {
+      id: ctx.session.userId,
+    },
+  });
+
+  await workos.userManagement.sendVerificationEmail({ userId: user.workosId });
+});
+
+const verifyEmail = protectedProcedure
+  .input(
+    z.object({
+      code: z.string(),
+    }),
+  )
+  .mutation(async ({ ctx, input }) => {
+    const workos = new WorkOS(process.env.WORKOS_API_KEY);
+
+    const user = await ctx.prisma.user.findUniqueOrThrow({
+      where: {
+        id: ctx.session.userId,
+      },
+    });
+
+    const { user: workosUser } = await workos.userManagement.verifyEmail({
+      code: input.code,
+      userId: user.workosId,
+    });
+
+    await ctx.prisma.user.update({
+      where: {
+        workosId: workosUser.id,
+      },
+      data: {
+        emailVerified: true,
+      },
+    });
+
+    ctx.session.emailVerified = true;
+
+    await ctx.session.save();
+  });
+
+export const auth = t.router({
+  signUp,
+  signIn,
+  signOut,
+  me,
+  forgotPassword,
+  resetPassword,
+  sendVerificationEmail,
+  verifyEmail,
+});

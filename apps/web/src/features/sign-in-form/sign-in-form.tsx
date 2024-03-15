@@ -38,7 +38,11 @@ export const SignInForm = () => {
 
       router.push("/");
     } catch (error) {
-      toast({ title: "Something went wrong. Please try again", variant: "destructive" });
+      toast({
+        title: "Something went wrong. Please try again",
+        description: (error as Error).message,
+        variant: "destructive",
+      });
     }
   };
 

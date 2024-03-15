@@ -5,6 +5,7 @@ export interface SessionData {
   userId: string;
   createdAt: string;
   isAuthenticated: boolean;
+  emailVerified: boolean;
 }
 
 type RequestType = IncomingMessage | Request;
