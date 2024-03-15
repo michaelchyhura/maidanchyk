@@ -1,12 +1,41 @@
 import { GetServerSideProps } from "next";
-import { StackedLayout } from "../widgets/layout";
-import { getSession } from "../shared/lib/session";
 import { prisma } from "@maidanchyk/prisma";
+import {
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  useToast,
+} from "@maidanchyk/ui";
+import { getSession } from "../shared/lib/session";
+import { StackedLayout } from "../widgets/layout";
 import { UserForm } from "../features/user-form";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@maidanchyk/ui";
 import { UserAvatarForm } from "../features/user-avatar-form";
+import { useAuth } from "../shared/providers/auth";
+import { trpc } from "../server/trpc";
 
 export default function Settings() {
+  const { toast } = useToast();
+
+  const { user } = useAuth();
+
+  const { mutateAsync: sendResetPasswordEmail, isLoading } = trpc.auth.forgotPassword.useMutation();
+
+  const handleResetPassword = async () => {
+    try {
+      await sendResetPasswordEmail({ email: user?.email || "" });
+
+      toast({
+        title: "Reset link successfully sent",
+        description: "Please check your email inbox and follow the instructions",
+      });
+    } catch (error) {
+      toast({ title: "Something went wrong. Please try again", variant: "destructive" });
+    }
+  };
+
   return (
     <StackedLayout title="Settings" spacing>
       <Card>
@@ -28,6 +57,17 @@ export default function Settings() {
         </CardHeader>
         <CardContent>
           <UserForm />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Password</CardTitle>
+          <CardDescription>Request reset password link to your email</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button onClick={handleResetPassword} disabled={isLoading}>
+            Reset Password
+          </Button>
         </CardContent>
       </Card>
     </StackedLayout>
