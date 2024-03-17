@@ -83,7 +83,7 @@ export const UserForm = () => {
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Phone</FormLabel>
+                <FormLabel>Phone Number</FormLabel>
                 <FormControl>
                   <Input placeholder="+380123456789" {...field} />
                 </FormControl>

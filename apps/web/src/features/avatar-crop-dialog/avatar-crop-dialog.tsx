@@ -11,7 +11,7 @@ import {
 import { ZoomIn, ZoomOut } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import AvatarEditor from "react-avatar-editor";
-import { compress } from "../../shared/lib/images";
+import { compress } from "../../shared/lib/files";
 
 type Props = {
   open: boolean;
