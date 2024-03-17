@@ -52,7 +52,7 @@ export const UserAvatarForm = () => {
     try {
       const blob = await upload(file.name, file, {
         access: "public",
-        handleUploadUrl: "/api/avatar/upload",
+        handleUploadUrl: "/api/blob/upload",
       });
 
       if (user?.photo) {

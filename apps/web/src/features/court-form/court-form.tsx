@@ -15,11 +15,14 @@ import {
   GoogleMap,
   Input,
   Textarea,
+  useToast,
 } from "@maidanchyk/ui";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { getGeocode, getLatLng } from "use-places-autocomplete";
+import { upload } from "@vercel/blob/client";
+import { useRouter } from "next/router";
 import { courtSchema } from "./lib/validation";
 import { useAuth } from "../../shared/providers/auth";
 import { Dropzone } from "../dropzone";
@@ -29,9 +32,15 @@ import {
   IVANO_FRANKIVSK_COORDINATES,
 } from "../../shared/constants/google-places";
 import { SUPPORTED_EVENT_TYPES } from "../../shared/constants/options";
+import { compress } from "../../shared/lib/files";
+import { trpc } from "../../server/trpc";
 
 export const CourtForm = () => {
+  const router = useRouter();
+  const { toast } = useToast();
   const { user } = useAuth();
+
+  const { mutateAsync: createCourt } = trpc.courts.create.useMutation();
 
   const form = useForm<z.infer<typeof courtSchema>>({
     resolver: zodResolver(courtSchema),
@@ -49,8 +58,23 @@ export const CourtForm = () => {
     },
   });
 
-  const handleSubmit = (values: z.infer<typeof courtSchema>) => {
-    console.log(values);
+  const handleSubmit = async (values: z.infer<typeof courtSchema>) => {
+    try {
+      const photos = await Promise.all(
+        values.photos.map(async (file) => {
+          return upload(file.name, await compress(file), {
+            access: "public",
+            handleUploadUrl: "/api/blob/upload",
+          });
+        }),
+      );
+      const court = await createCourt({ ...values, photos });
+
+      toast({ title: "Court successfully created" });
+      router.push(`/courts/${court.id}`);
+    } catch (error) {
+      toast({ title: "Something went wrong", description: "Please try again" });
+    }
   };
 
   return (
@@ -173,6 +197,7 @@ export const CourtForm = () => {
               name="photos"
               render={({ field }) => (
                 <FormItem>
+                  <FormDescription>Upload up to 5 photos showcasing the gym</FormDescription>
                   <FormControl>
                     <Dropzone
                       value={field.value}
@@ -187,7 +212,6 @@ export const CourtForm = () => {
                       disabled={field.value.length === 5}
                     />
                   </FormControl>
-                  <FormDescription>Upload up to 5 photos showcasing the gym</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

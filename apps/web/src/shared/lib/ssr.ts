@@ -22,6 +22,7 @@ export const withUser: (getServerSideProps?: GetServerSideProps) => GetServerSid
         name: true,
         email: true,
         photo: true,
+        phone: true,
         role: true,
       },
     });

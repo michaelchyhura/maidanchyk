@@ -1,11 +1,13 @@
+import { UserRole } from "@maidanchyk/prisma";
 import type { IncomingMessage, ServerResponse } from "http";
 import { SessionOptions, getIronSession } from "iron-session";
 
 export interface SessionData {
-  userId: string;
-  createdAt: string;
   isAuthenticated: boolean;
+  userId: string;
+  role: UserRole;
   emailVerified: boolean;
+  createdAt: string;
 }
 
 type RequestType = IncomingMessage | Request;

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useDropzone } from "react-dropzone";
-import { Images, Trash2 } from "lucide-react";
+import { ImageUp, Images, Trash2 } from "lucide-react";
 import { Button, cn } from "@maidanchyk/ui";
 import { uniq } from "../../shared/lib/arrays";
 import { toHumanSize } from "../../shared/lib/files";
@@ -13,8 +13,8 @@ type Props = {
   disabled?: boolean;
 };
 
-export const Dropzone = ({ value, onChange, onError, maxFiles = 1, disabled }: Props) => {
-  const { getRootProps, getInputProps } = useDropzone({
+export const Dropzone = ({ value, onChange, onError, maxFiles, disabled }: Props) => {
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
       "image/*": [".png", ".jpg", ".jpeg"],
     },
@@ -49,15 +49,20 @@ export const Dropzone = ({ value, onChange, onError, maxFiles = 1, disabled }: P
           className: cn(
             "mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10",
             { "opacity-30": disabled },
+            { "bg-blue-50": isDragActive },
           ),
         })}>
         <div className="text-center">
-          <Images className="mx-auto h-12 w-12 text-gray-300" aria-hidden="true" />
+          {isDragActive ? (
+            <ImageUp className="mx-auto h-12 w-12 text-gray-300" aria-hidden="true" />
+          ) : (
+            <Images className="mx-auto h-12 w-12 text-gray-300" aria-hidden="true" />
+          )}
           <div className="mt-4 flex text-sm leading-6 text-gray-600">
             <label
               htmlFor="file-upload"
               className={cn(
-                "relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500",
+                "relative cursor-pointer rounded-md font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500",
                 { "cursor-default": disabled },
               )}>
               <span>Upload a file</span>
@@ -66,6 +71,7 @@ export const Dropzone = ({ value, onChange, onError, maxFiles = 1, disabled }: P
                 name="file-upload"
                 type="file"
                 className="sr-only"
+                disabled={disabled}
                 {...getInputProps()}
               />
             </label>

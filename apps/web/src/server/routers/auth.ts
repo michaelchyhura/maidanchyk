@@ -31,12 +31,14 @@ const signUp = publicProcedure
       },
       select: {
         id: true,
+        role: true
       },
     });
 
     ctx.session.isAuthenticated = true;
-    ctx.session.emailVerified = workosUser.emailVerified;
     ctx.session.userId = user.id;
+    ctx.session.role = user.role
+    ctx.session.emailVerified = workosUser.emailVerified;
     ctx.session.createdAt = new Date().toISOString();
 
     await ctx.session.save();
@@ -69,12 +71,14 @@ const signIn = publicProcedure
         },
         select: {
           id: true,
+          role: true
         },
       });
 
       ctx.session.isAuthenticated = true;
-      ctx.session.emailVerified = workosUser.emailVerified;
       ctx.session.userId = user.id;
+      ctx.session.role = user.role
+      ctx.session.emailVerified = workosUser.emailVerified;
       ctx.session.createdAt = new Date().toISOString();
 
       await ctx.session.save();
@@ -89,6 +93,7 @@ const signIn = publicProcedure
             },
             select: {
               id: true,
+              role:true,
               workosId: true,
             },
           });
@@ -96,8 +101,9 @@ const signIn = publicProcedure
           await workos.userManagement.sendVerificationEmail({ userId: user.workosId });
 
           ctx.session.isAuthenticated = true;
-          ctx.session.emailVerified = false;
           ctx.session.userId = user.id;
+          ctx.session.role = user.role
+          ctx.session.emailVerified = false;
           ctx.session.createdAt = new Date().toISOString();
 
           await ctx.session.save();
@@ -175,12 +181,14 @@ const resetPassword = publicProcedure
       },
       select: {
         id: true,
+        role: true,
       },
     });
 
     ctx.session.isAuthenticated = true;
-    ctx.session.emailVerified = workosUser.emailVerified;
     ctx.session.userId = user.id;
+    ctx.session.role = user.role;
+    ctx.session.emailVerified = workosUser.emailVerified;
     ctx.session.createdAt = new Date().toISOString();
 
     await ctx.session.save();

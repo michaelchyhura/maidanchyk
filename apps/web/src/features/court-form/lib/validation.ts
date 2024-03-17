@@ -40,7 +40,6 @@ export const courtSchema = z.object({
       }),
       types: z.array(z.string()),
     })
-    .nullable()
     .refine((value) => value, {
       message: "City is required",
     }),
@@ -48,8 +47,7 @@ export const courtSchema = z.object({
     .object({
       lat: z.number(),
       lng: z.number(),
-    })
-    .nullable(),
+    }),
   contactPerson: z.string().min(1, "Contact Person is required"),
   contactEmail: z.string().min(1, { message: "Email is required" }).email("Invalid email address"),
   contactPhone: z.string().regex(PHONE_REG_EXP, { message: "Invalid phone number" }),

@@ -36,7 +36,7 @@ export function GoogleMap({
         <GoogleMapReact
           bootstrapURLKeys={{ key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "" }}
           defaultCenter={_defaultCenter}
-          defaultZoom={12}
+          defaultZoom={14}
           onDragEnd={(map: { center: { lat: () => number; lng: () => number } }) => {
             onCenterChange?.({ lat: map.center.lat(), lng: map.center.lng() });
           }}
