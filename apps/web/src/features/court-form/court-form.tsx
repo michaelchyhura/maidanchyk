@@ -31,7 +31,7 @@ import {
   IVANO_FRANKIVSK_CITY,
   IVANO_FRANKIVSK_COORDINATES,
 } from "../../shared/constants/google-places";
-import { SUPPORTED_EVENT_TYPES } from "../../shared/constants/options";
+import { COURT_EVENTS } from "../../shared/constants/options";
 import { compress } from "../../shared/lib/files";
 import { trpc } from "../../server/trpc";
 
@@ -48,7 +48,7 @@ export const CourtForm = () => {
       name: "",
       description: "",
       price: "",
-      supportedEventTypes: [],
+      events: [],
       photos: [],
       city: IVANO_FRANKIVSK_CITY,
       location: IVANO_FRANKIVSK_COORDINATES,
@@ -146,35 +146,35 @@ export const CourtForm = () => {
           <CardContent className="space-y-4">
             <FormField
               control={form.control}
-              name="supportedEventTypes"
+              name="events"
               render={() => (
                 <FormItem>
                   <FormLabel className="mb-4 text-base">Supported Events</FormLabel>
-                  {SUPPORTED_EVENT_TYPES.map((eventType) => (
+                  {COURT_EVENTS.map((event) => (
                     <FormField
-                      key={eventType.value}
+                      key={event.value}
                       control={form.control}
-                      name="supportedEventTypes"
+                      name="events"
                       render={({ field }) => {
                         return (
                           <FormItem
-                            key={eventType.value}
+                            key={event.value}
                             className="flex flex-row items-start space-x-3 space-y-0">
                             <FormControl>
                               <Checkbox
-                                checked={field.value.includes(eventType.value)}
+                                checked={field.value.includes(event.value)}
                                 onCheckedChange={(checked) => {
                                   if (checked) {
-                                    field.onChange([...field.value, eventType.value]);
+                                    field.onChange([...field.value, event.value]);
                                   } else {
                                     field.onChange(
-                                      field.value.filter((value) => value !== eventType.value),
+                                      field.value.filter((value) => value !== event.value),
                                     );
                                   }
                                 }}
                               />
                             </FormControl>
-                            <FormLabel className="font-normal">{eventType.label}</FormLabel>
+                            <FormLabel className="font-normal">{event.label}</FormLabel>
                           </FormItem>
                         );
                       }}
@@ -232,6 +232,7 @@ export const CourtForm = () => {
                   <FormControl>
                     <GooglePlacesAutocomplete
                       className="max-w-2xl"
+                      label="Select City"
                       value={field.value}
                       onChange={async (suggestion) => {
                         field.onChange(suggestion);

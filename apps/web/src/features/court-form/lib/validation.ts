@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CourtEventType } from "@maidanchyk/prisma";
+import { CourtEvent } from "@maidanchyk/prisma";
 import { PHONE_REG_EXP } from "../../../shared/lib/regexp";
 
 export const courtSchema = z.object({
@@ -12,20 +12,20 @@ export const courtSchema = z.object({
     .min(1, "Description is required")
     .max(255, "Description should be less then 255 characters long"),
   price: z.string().min(1, "Price is required"),
-  supportedEventTypes: z
+  events: z
     .array(
       z.enum([
-        CourtEventType.BASKETBALL,
-        CourtEventType.VOLLEYBALL,
-        CourtEventType.MINI_FOOTBALL,
-        CourtEventType.TENNIS,
-        CourtEventType.BADMINTON,
-        CourtEventType.HANDBALL,
-        CourtEventType.MULTI_SPORT,
+        CourtEvent.BASKETBALL,
+        CourtEvent.VOLLEYBALL,
+        CourtEvent.MINI_FOOTBALL,
+        CourtEvent.TENNIS,
+        CourtEvent.BADMINTON,
+        CourtEvent.HANDBALL,
+        CourtEvent.MULTI_SPORT,
       ]),
     )
     .refine((value) => value.some((item) => item), {
-      message: "You have to select at least one supported event type",
+      message: "You have to select at least one event type",
     }),
   photos: z.array(z.any()).refine((value) => value.some((item) => item), {
     message: "You need to attach at least one file",
@@ -43,11 +43,10 @@ export const courtSchema = z.object({
     .refine((value) => value, {
       message: "City is required",
     }),
-  location: z
-    .object({
-      lat: z.number(),
-      lng: z.number(),
-    }),
+  location: z.object({
+    lat: z.number(),
+    lng: z.number(),
+  }),
   contactPerson: z.string().min(1, "Contact Person is required"),
   contactEmail: z.string().min(1, { message: "Email is required" }).email("Invalid email address"),
   contactPhone: z.string().regex(PHONE_REG_EXP, { message: "Invalid phone number" }),

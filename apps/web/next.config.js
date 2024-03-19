@@ -14,7 +14,10 @@ const nextConfig = {
       permanent: true,
       destination: "/",
     },
-  ])
+  ]),
+  images: {
+    domains: ["zpndpclepbmxdzgc.public.blob.vercel-storage.com"]
+  }
 }
 
 module.exports = nextConfig

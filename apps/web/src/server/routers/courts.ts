@@ -1,8 +1,87 @@
 import { z } from "zod";
-import { CourtEventType } from "@maidanchyk/prisma";
-import { protectedProcedure } from "../procedures";
+import { CourtEvent } from "@maidanchyk/prisma";
+import { protectedProcedure, publicProcedure } from "../procedures";
 import { t } from "../instance";
 import { PHONE_REG_EXP } from "../../shared/lib/regexp";
+
+const list = publicProcedure
+  .input(
+    z.object({
+      page: z.number().nullish(),
+      limit: z.number().min(1).max(100).nullish(),
+      query: z.string().optional(),
+      sort: z
+        .object({
+          createdAt: z.enum(["asc", "desc"]).optional(),
+          price: z.enum(["asc", "desc"]).optional(),
+        })
+        .optional(),
+      city: z.object({ placeId: z.string().optional() }).optional(),
+      events: z
+        .array(
+          z.enum([
+            CourtEvent.BASKETBALL,
+            CourtEvent.VOLLEYBALL,
+            CourtEvent.MINI_FOOTBALL,
+            CourtEvent.TENNIS,
+            CourtEvent.BADMINTON,
+            CourtEvent.HANDBALL,
+            CourtEvent.MULTI_SPORT,
+          ]),
+        )
+        .optional(),
+    }),
+  )
+  .query(async ({ ctx, input }) => {
+    const where = {};
+    const page = input.page ? input.page - 1 : 0;
+    const limit = input.limit ?? 50;
+
+    if (input.query) {
+      Object.assign(where, { name: { mode: "insensitive", contains: input.query } });
+    }
+
+    if (input.city?.placeId) {
+      Object.assign(where, { city: { placeId: input.city.placeId } });
+    }
+
+    if (input.events) {
+      Object.assign(where, { events: { hasSome: input.events } });
+    }
+
+    const [items, count] = await ctx.prisma.$transaction([
+      ctx.prisma.court.findMany({
+        take: limit,
+        skip: page * limit,
+        where,
+        orderBy: input.sort || { createdAt: "desc" },
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          price: true,
+          city: {
+            select: {
+              mainText: true,
+            },
+          },
+          photos: {
+            take: 1,
+          },
+          events: true,
+          createdAt: true,
+        },
+      }),
+      ctx.prisma.court.count({ where }),
+    ]);
+
+    return {
+      items,
+      page: input.page,
+      totalPages: Math.ceil(count / limit),
+      total: count,
+    };
+  });
 
 const create = protectedProcedure
   .input(
@@ -16,20 +95,20 @@ const create = protectedProcedure
         .min(1, "Description is required")
         .max(255, "Description should be less then 255 characters long"),
       price: z.string().min(1, "Price is required"),
-      supportedEventTypes: z
+      events: z
         .array(
           z.enum([
-            CourtEventType.BASKETBALL,
-            CourtEventType.VOLLEYBALL,
-            CourtEventType.MINI_FOOTBALL,
-            CourtEventType.TENNIS,
-            CourtEventType.BADMINTON,
-            CourtEventType.HANDBALL,
-            CourtEventType.MULTI_SPORT,
+            CourtEvent.BASKETBALL,
+            CourtEvent.VOLLEYBALL,
+            CourtEvent.MINI_FOOTBALL,
+            CourtEvent.TENNIS,
+            CourtEvent.BADMINTON,
+            CourtEvent.HANDBALL,
+            CourtEvent.MULTI_SPORT,
           ]),
         )
         .refine((value) => value.some((item) => item), {
-          message: "You have to select at least one supported event type",
+          message: "You have to select at least one event type",
         }),
       photos: z
         .array(
@@ -73,7 +152,7 @@ const create = protectedProcedure
         name: input.name,
         description: input.description,
         price: parseFloat(input.price),
-        supportedEventTypes: input.supportedEventTypes,
+        events: input.events,
         photos: {
           createMany: {
             data: input.photos,
@@ -105,4 +184,4 @@ const create = protectedProcedure
     });
   });
 
-export const courts = t.router({ create });
+export const courts = t.router({ list, create });

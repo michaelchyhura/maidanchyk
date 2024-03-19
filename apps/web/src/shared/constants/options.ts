@@ -1,11 +1,11 @@
-import { CourtEventType } from "@maidanchyk/prisma";
+import { CourtEvent } from "@maidanchyk/prisma";
 
-export const SUPPORTED_EVENT_TYPES = [
-  { label: "Badminton", value: CourtEventType.BADMINTON },
-  { label: "Basketball", value: CourtEventType.BASKETBALL },
-  { label: "Handball", value: CourtEventType.HANDBALL },
-  { label: "Mini Football", value: CourtEventType.MINI_FOOTBALL },
-  { label: "Multi-Sport", value: CourtEventType.MULTI_SPORT },
-  { label: "Tennis", value: CourtEventType.TENNIS },
-  { label: "Volleyball", value: CourtEventType.VOLLEYBALL },
+export const COURT_EVENTS = [
+  { label: "Badminton", value: CourtEvent.BADMINTON },
+  { label: "Basketball", value: CourtEvent.BASKETBALL },
+  { label: "Handball", value: CourtEvent.HANDBALL },
+  { label: "Mini Football", value: CourtEvent.MINI_FOOTBALL },
+  { label: "Multi-Sport", value: CourtEvent.MULTI_SPORT },
+  { label: "Tennis", value: CourtEvent.TENNIS },
+  { label: "Volleyball", value: CourtEvent.VOLLEYBALL },
 ];

@@ -16,7 +16,7 @@ export const IVANO_FRANKIVSK_CITY = {
         offset: 0,
       },
     ],
-    secondary_text: "Івано-Франківськ область, Україна",
+    secondary_text: "Івано-Франківська область, Україна",
   },
   terms: [
     {
@@ -25,7 +25,7 @@ export const IVANO_FRANKIVSK_CITY = {
     },
     {
       offset: 17,
-      value: "Івано-Франківськ область",
+      value: "Івано-Франківська область",
     },
     {
       offset: 44,
