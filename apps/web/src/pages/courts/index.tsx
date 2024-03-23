@@ -16,12 +16,12 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "../../server/trpc";
 import { withUser } from "../../shared/lib/ssr";
 import { StackedLayout } from "../../widgets/layout";
-import Image from "next/image";
 import { Settings2 } from "lucide-react";
 import { IVANO_FRANKIVSK_CITY } from "../../shared/constants/google-places";
 import {
   Pagination,
   PaginationContent,
+  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -132,18 +132,52 @@ export default function Courts() {
                       />
                     </PaginationItem>
                   )}
-                  {Array.from({ length: data.totalPages }).map((_, index) => (
-                    <PaginationItem key={index}>
+
+                  {Array.from({ length: data.totalPages })
+                    .slice(0, 2)
+                    .map((_, index) => (
+                      <PaginationItem key={index}>
+                        <PaginationLink
+                          isActive={page === index + 1}
+                          href={{
+                            pathname: "/courts",
+                            query: presence({ page: index + 1, query, sort, events }),
+                          }}>
+                          {index + 1}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+
+                  {[1, 2, data.totalPages].includes(page) ? (
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  ) : (
+                    <PaginationItem>
                       <PaginationLink
-                        isActive={page === index + 1}
+                        isActive
                         href={{
                           pathname: "/courts",
-                          query: presence({ page: index + 1, query, sort, events }),
+                          query: presence({ page, query, sort, events }),
                         }}>
-                        {index + 1}
+                        {page}
                       </PaginationLink>
                     </PaginationItem>
-                  ))}
+                  )}
+
+                  {data.totalPages > 4 && (
+                    <PaginationItem>
+                      <PaginationLink
+                        isActive={page === data.totalPages}
+                        href={{
+                          pathname: "/courts",
+                          query: presence({ page: data.totalPages, query, sort, events }),
+                        }}>
+                        {data.totalPages}
+                      </PaginationLink>
+                    </PaginationItem>
+                  )}
+
                   {page !== data.totalPages && (
                     <PaginationItem>
                       <PaginationNext
