@@ -16,7 +16,7 @@ const nextConfig = {
     },
   ]),
   images: {
-    domains: ["zpndpclepbmxdzgc.public.blob.vercel-storage.com"]
+    domains: ["zpndpclepbmxdzgc.public.blob.vercel-storage.com", 'images.unsplash.com']
   }
 }
 

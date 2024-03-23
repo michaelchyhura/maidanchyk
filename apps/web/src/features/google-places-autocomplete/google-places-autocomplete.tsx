@@ -41,8 +41,13 @@ export const GooglePlacesAutocomplete = ({ className, label, value, onChange }: 
   };
 
   return (
-    <Combobox as="div" className={className} onChange={handleChange} value={value} disabled>
-      <Combobox.Label className="mb-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+    <Combobox
+      as="div"
+      className={cn("grid gap-y-2", className)}
+      onChange={handleChange}
+      value={value}
+      disabled>
+      <Combobox.Label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
         {label}
       </Combobox.Label>
       <div className="relative">

@@ -8,10 +8,10 @@ import { trpc } from "../../server/trpc";
 import { getInitials } from "../../shared/lib/strings";
 
 const navigation = [
-  { name: "Dashboard", href: "#", current: true },
-  { name: "Team", href: "#", current: false },
-  { name: "Projects", href: "#", current: false },
-  { name: "Calendar", href: "#", current: false },
+  { name: "Courts", href: "/courts", current: true },
+  // { name: "Team", href: "#", current: false },
+  // { name: "Projects", href: "#", current: false },
+  // { name: "Calendar", href: "#", current: false },
 ];
 
 const userNavigation = [
@@ -43,12 +43,12 @@ export const Header = () => {
                   <img
                     className="block h-8 w-auto lg:hidden"
                     src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                    alt="Your Company"
+                    alt="Maidanchyk"
                   />
                   <img
                     className="hidden h-8 w-auto lg:block"
                     src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                    alt="Your Company"
+                    alt="Maidanchyk"
                   />
                 </div>
                 <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">

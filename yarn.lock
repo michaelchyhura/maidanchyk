@@ -392,13 +392,6 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.1.tgz#16308cea045f0fc777b6ff20a9f25474dd8293d2"
   integrity sha512-9TANp6GPoMtYzQdt54kfAyMmz1+osLlXdg2ENroU7zzrtflTLrrC/lgrIfaSe+Wu0b89GKccT7vxXA0MoAIO+Q==
 
-"@googlemaps/js-api-loader@^1.13.8":
-  version "1.16.6"
-  resolved "https://registry.yarnpkg.com/@googlemaps/js-api-loader/-/js-api-loader-1.16.6.tgz#c89970c94b55796d51746c092f0e52953994a171"
-  integrity sha512-V8p5W9DbPQx74jWUmyYJOerhiB4C+MHekaO0ZRmc6lrOYrvY7+syLhzOWpp55kqSPeNb+qbC2h8i69aLIX6krQ==
-  dependencies:
-    fast-deep-equal "^3.1.3"
-
 "@headlessui/react@^1.7.18":
   version "1.7.18"
   resolved "https://registry.yarnpkg.com/@headlessui/react/-/react-1.7.18.tgz#30af4634d2215b2ca1aa29d07f33d02bea82d9d7"
@@ -470,11 +463,6 @@
   dependencies:
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
-
-"@mapbox/point-geometry@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@mapbox/point-geometry/-/point-geometry-0.1.0.tgz#8a83f9335c7860effa2eeeca254332aa0aeed8f2"
-  integrity sha512-6j56HdLTwWGO0fJPlrZtdU/B13q8Uwmo18Ck2GnGgN9PCFyKTZ3UbXeEdRFh18i9XQ92eH2VdtpJHpBD3aripQ==
 
 "@microsoft/tsdoc-config@0.16.2":
   version "0.16.2"
@@ -1354,6 +1342,11 @@
   dependencies:
     "@types/react" "*"
 
+"@types/google.maps@^3.54.10":
+  version "3.55.5"
+  resolved "https://registry.yarnpkg.com/@types/google.maps/-/google.maps-3.55.5.tgz#cee2391af1e32aae9f1c1a8d0c2dec265fb60645"
+  integrity sha512-U1QwCo1GeeLm0YI/GoHvfd1VfwgnoUSBcKCMXXFAM+2izSSuqqwZUJ9XNO6NxZxmYKjBNI+NF5eGF6uUSb1aSg==
+
 "@types/google.maps@^3.55.4":
   version "3.55.4"
   resolved "https://registry.yarnpkg.com/@types/google.maps/-/google.maps-3.55.4.tgz#66860b5ed623edabcc42f8f7a743584fe60225be"
@@ -1652,6 +1645,14 @@
     eslint-plugin-tsdoc "^0.2.17"
     eslint-plugin-unicorn "^43.0.2"
     prettier-plugin-packagejson "^2.3.0"
+
+"@vis.gl/react-google-maps@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@vis.gl/react-google-maps/-/react-google-maps-0.8.0.tgz#29aa9d10ebd71eb1dfe2b32ced5cea9e7d8563ee"
+  integrity sha512-mvJQN3olDe6Uwz+hKJ25uWsWNjSFXYqUy0tJSnY8KY9r9yASSYfSnXyPU9Cu5ivfbzfzDxD1yq5k9I1+vpkWaA==
+  dependencies:
+    "@types/google.maps" "^3.54.10"
+    fast-deep-equal "^3.1.3"
 
 "@workos-inc/node@^6.1.0":
   version "6.1.0"
@@ -2561,6 +2562,24 @@ electron-to-chromium@^1.4.668:
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.703.tgz#786ab0c8cfe548b9da03890f923e69b1ae522741"
   integrity sha512-094ZZC4nHXPKl/OwPinSMtLN9+hoFkdfQGKnvXbY+3WEAYtVDpz9UhJIViiY6Zb8agvqxiaJzNG9M+pRZWvSZw==
 
+embla-carousel-react@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/embla-carousel-react/-/embla-carousel-react-8.0.0.tgz#73abd0a30c2faa37532ae3c4c0b484867e066d5f"
+  integrity sha512-qT0dii8ZwoCtEIBE6ogjqU2+5IwnGfdt2teKjCzW88JRErflhlCpz8KjWnW8xoRZOP8g0clRtsMEFoAgS/elfA==
+  dependencies:
+    embla-carousel "8.0.0"
+    embla-carousel-reactive-utils "8.0.0"
+
+embla-carousel-reactive-utils@8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/embla-carousel-reactive-utils/-/embla-carousel-reactive-utils-8.0.0.tgz#65342e9feb8d2780fcb1d1d6050ce41837385efa"
+  integrity sha512-JCw0CqCXI7tbHDRogBb9PoeMLyjEC1vpN0lDOzUjmlfVgtfF+ffLaOK8bVtXVUEbNs/3guGe3NSzA5J5aYzLzw==
+
+embla-carousel@8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/embla-carousel/-/embla-carousel-8.0.0.tgz#164d0faafe3220c2584c08d45a738c9fb4efc344"
+  integrity sha512-ecixcyqS6oKD2nh5Nj5MObcgoSILWNI/GtBxkidn5ytFaCCmwVHo2SecksaQZHcARMMpIR2dWOlSIdA1LkZFUA==
+
 emoji-regex@^8.0.0:
   version "8.0.0"
   resolved "https://registry.npmjs.org/emoji-regex/-/emoji-regex-8.0.0.tgz"
@@ -3067,11 +3086,6 @@ esutils@^2.0.2:
   resolved "https://registry.npmjs.org/esutils/-/esutils-2.0.3.tgz"
   integrity sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==
 
-eventemitter3@^4.0.4:
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
-  integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
-
 execa@5.1.1, execa@^5.0.0:
   version "5.1.1"
   resolved "https://registry.npmjs.org/execa/-/execa-5.1.1.tgz"
@@ -3450,16 +3464,6 @@ globby@^13.1.2:
     ignore "^5.2.4"
     merge2 "^1.4.1"
     slash "^4.0.0"
-
-google-map-react@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/google-map-react/-/google-map-react-2.2.1.tgz#54c45899966fb0000e04cde2d5ca44ad728bdba6"
-  integrity sha512-Dg8aexf5rNSmywj0XKQ5m4RNzVcWwKEM2BGDj5aPChD0um8ZRjB5Upcb/yg/i0oG1aES29asQ5+6BHVgrK5xGA==
-  dependencies:
-    "@googlemaps/js-api-loader" "^1.13.8"
-    "@mapbox/point-geometry" "^0.1.0"
-    eventemitter3 "^4.0.4"
-    prop-types "^15.7.2"
 
 gopd@^1.0.1:
   version "1.0.1"
@@ -4928,6 +4932,11 @@ react-is@^16.13.1:
   version "16.13.1"
   resolved "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
+
+react-photo-view@^1.2.4:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/react-photo-view/-/react-photo-view-1.2.4.tgz#0795c7bb961bacbc45d2e9cf91ec35ca5cddce1d"
+  integrity sha512-8G7yb0YgQuVgEMT3DopiROZyY8cgCDpba+G5MoxDkHNFOyqtw3r5T5tazYeifybPrvHWuKXj/bnAlBtQcpxyzQ==
 
 react-remove-scroll-bar@^2.3.3:
   version "2.3.5"

@@ -43,7 +43,7 @@ export default function Courts() {
 
   const { data, isLoading } = trpc.courts.list.useQuery({
     page,
-    limit: 30,
+    limit: 15,
     query,
     sort: (
       {
@@ -132,7 +132,7 @@ export default function Courts() {
                       />
                     </PaginationItem>
                   )}
-                  {Array.from({ length: data?.totalPages }).map((_, index) => (
+                  {Array.from({ length: data.totalPages }).map((_, index) => (
                     <PaginationItem key={index}>
                       <PaginationLink
                         isActive={page === index + 1}

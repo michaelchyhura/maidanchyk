@@ -60,9 +60,9 @@ const list = publicProcedure
           name: true,
           description: true,
           price: true,
-          city: {
+          location: {
             select: {
-              mainText: true,
+              formattedAddress: true,
             },
           },
           photos: {
@@ -82,6 +82,18 @@ const list = publicProcedure
       total: count,
     };
   });
+
+const get = publicProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
+  return ctx.prisma.court.findUnique({
+    where: {
+      id: input.id,
+    },
+    include: {
+      location: true,
+      photos: true,
+    },
+  });
+});
 
 const create = protectedProcedure
   .input(
@@ -129,15 +141,21 @@ const create = protectedProcedure
             main_text: z.string(),
             secondary_text: z.string(),
           }),
-          types: z.array(z.string()),
         })
         .refine((value) => value, {
           message: "City is required",
         }),
-      location: z.object({
-        lat: z.number(),
-        lng: z.number(),
-      }),
+      location: z
+        .object({
+          placeId: z.string(),
+          formattedAddress: z.string(),
+          lat: z.number(),
+
+          lng: z.number(),
+        })
+        .refine((value) => value, {
+          message: "Location is required",
+        }),
       contactPerson: z.string().min(1, "Contact Person is required"),
       contactEmail: z
         .string()
@@ -164,11 +182,11 @@ const create = protectedProcedure
             placeId: input.city.place_id,
             mainText: input.city.structured_formatting.main_text,
             secondaryText: input.city.structured_formatting.secondary_text,
-            types: input.city.types,
           },
         },
-        lat: input.location.lat,
-        lng: input.location.lng,
+        location: {
+          create: input.location,
+        },
         contactPerson: input.contactPerson,
         contactEmail: input.contactEmail,
         contactPhone: input.contactPhone,
@@ -184,4 +202,4 @@ const create = protectedProcedure
     });
   });
 
-export const courts = t.router({ list, create });
+export const courts = t.router({ list, get, create });

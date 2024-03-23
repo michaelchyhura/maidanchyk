@@ -47,7 +47,10 @@ export const UserMenu = () => {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="w-56" side="bottom" align="end">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>
+          {user.name && <p className="font-medium text-gray-800">{user.name}</p>}
+          <p className="break-all text-sm font-medium text-gray-500">{user.email}</p>
+        </DropdownMenuLabel>
 
         <DropdownMenuSeparator />
 

@@ -1,3 +1,6 @@
+import { CourtEvent } from "@maidanchyk/prisma";
+import { COURT_EVENTS } from "../constants/options";
+
 export const getInitials = (name: string) => {
   const words = name.split(" ");
 
@@ -9,3 +12,6 @@ export const getInitials = (name: string) => {
 
   return initials;
 };
+
+export const eventTypeToLabel = (event: CourtEvent) =>
+  COURT_EVENTS.find((e) => e.value === event)?.label || "";

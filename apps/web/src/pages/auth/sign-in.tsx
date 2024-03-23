@@ -1,4 +1,3 @@
-import { Button } from "@maidanchyk/ui";
 import Link from "next/link";
 import { SignInForm } from "../../features/sign-in-form";
 import { AuthLayout } from "../../widgets/layout";
@@ -26,7 +25,7 @@ export default function SignIn() {
       <div className="mt-6">
         <SignInForm />
 
-        <div className="mt-6">
+        {/* <div className="mt-6">
           <div className="relative">
             <div className="absolute inset-0 flex items-center" aria-hidden="true">
               <div className="w-full border-t border-gray-200" />
@@ -61,7 +60,7 @@ export default function SignIn() {
               </a>
             </Button>
           </div>
-        </div>
+        </div> */}
       </div>
     </AuthLayout>
   );

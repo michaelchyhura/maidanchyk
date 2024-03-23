@@ -92,7 +92,7 @@ const Thumbnails = ({ files, onDelete }: { files: File[]; onDelete: (index: numb
       {files.map((file, index) => (
         <li
           key={file.name}
-          className="flex items-center justify-between space-x-4 rounded-lg border p-4">
+          className="flex items-center justify-between space-x-4 rounded-lg border p-4 shadow-sm">
           <div className="flex space-x-4">
             <div className="relative h-14 w-14">
               <Image

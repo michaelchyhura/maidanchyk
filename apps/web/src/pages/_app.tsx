@@ -5,6 +5,8 @@ import { AuthProvider } from "../shared/providers/auth";
 import dayjs from "dayjs";
 import LocalizedFormat from "dayjs/plugin/localizedFormat";
 
+import "react-photo-view/dist/react-photo-view.css";
+
 import "../styles/globals.css";
 
 dayjs.extend(LocalizedFormat);

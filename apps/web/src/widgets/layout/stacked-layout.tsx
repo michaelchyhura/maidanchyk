@@ -3,7 +3,7 @@ import { cn } from "@maidanchyk/ui";
 import { Header } from "../header";
 
 type Props = {
-  title: string;
+  title?: string;
   spacing?: boolean;
   children: ReactNode;
 };
@@ -14,16 +14,18 @@ export const StackedLayout = ({ title, spacing = false, children }: Props) => {
       <Header />
 
       <div className="py-10">
-        <header>
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900">
-              {title}
-            </h1>
-          </div>
-        </header>
+        {title && (
+          <header>
+            <div className="pm-4 mx-auto mb-4 max-w-7xl px-4 sm:mb-6 sm:px-6 lg:mb-8 lg:px-8">
+              <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900 ">
+                {title}
+              </h1>
+            </div>
+          </header>
+        )}
 
         <main>
-          <div className={cn("mx-auto max-w-7xl p-4 sm:p-6 lg:p-8", { "space-y-4": spacing })}>
+          <div className={cn("mx-auto max-w-7xl px-4 sm:px-6 lg:px-8", { "space-y-4": spacing })}>
             {children}
           </div>
         </main>
