@@ -7,7 +7,7 @@ import { UserRole } from "@maidanchyk/prisma";
 const routes = {
   public: ["/auth/sign-in", "/auth/sign-up"],
   protected: ["/settings"],
-  courtOwner: ["/courts/create"],
+  courtOwner: ["/courts/create", "/courts/edit", "/courts/mine"],
   // player: [],
   verify: ["/auth/verify"],
 };

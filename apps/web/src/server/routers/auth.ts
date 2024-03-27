@@ -114,10 +114,6 @@ const signIn = publicProcedure
     }
   });
 
-const signOut = protectedProcedure.mutation(async ({ ctx }) => {
-  ctx.session.destroy();
-});
-
 const me = protectedProcedure.query(async ({ ctx }) => {
   const user = await ctx.prisma.user.findUnique({
     where: {
@@ -243,7 +239,6 @@ const verifyEmail = protectedProcedure
 export const auth = t.router({
   signUp,
   signIn,
-  signOut,
   me,
   forgotPassword,
   resetPassword,

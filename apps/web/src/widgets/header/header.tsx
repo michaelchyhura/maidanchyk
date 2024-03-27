@@ -1,37 +1,61 @@
 import { Disclosure } from "@headlessui/react";
 import { MenuIcon, X } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage, cn } from "@maidanchyk/ui";
+import { Avatar, AvatarFallback, AvatarImage, Button, buttonVariants, cn } from "@maidanchyk/ui";
 import { UserMenu } from "../../features/user-menu";
 import { useRouter } from "next/router";
 import { useAuth } from "../../shared/providers/auth";
-import { trpc } from "../../server/trpc";
 import { getInitials } from "../../shared/lib/strings";
-
-const navigation = [
-  { name: "Courts", href: "/courts", current: true },
-  { name: "My Courts", href: "/profile/my-courts", current: false },
-  // { name: "Team", href: "#", current: false },
-  // { name: "Projects", href: "#", current: false },
-  // { name: "Calendar", href: "#", current: false },
-];
-
-const userNavigation = [
-  // { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "/settings" },
-  { name: "Sign Out", href: "#" },
-];
+import { UserRole } from "@maidanchyk/prisma";
+import Link from "next/link";
 
 export const Header = () => {
   const router = useRouter();
   const { user } = useAuth();
 
-  const { mutateAsync: signOut } = trpc.auth.signOut.useMutation();
+  const navigation = () => {
+    if (user?.role === UserRole.COURT_OWNER) {
+      return [
+        {
+          name: "Courts",
+          href: "/courts",
+        },
+        {
+          name: "My Courts",
+          href: "/courts/mine",
+        },
+      ];
+    }
 
-  const handleSignOut = async () => {
-    await signOut();
-
-    router.push("/auth/sign-in");
+    return [
+      {
+        name: "Courts",
+        href: "/courts",
+      },
+    ];
   };
+
+  const userNavigation = () =>
+    user
+      ? [
+          {
+            name: "Settings",
+            href: "/settings",
+          },
+          {
+            name: "Sign Out",
+            href: "/api/auth/sign-out",
+          },
+        ]
+      : [
+          {
+            name: "Sign In",
+            href: "/auth/sign-in",
+          },
+          {
+            name: "Sign Up",
+            href: "/auth/sign-up",
+          },
+        ];
 
   return (
     <Disclosure as="nav" className="border-b border-gray-200 bg-white">
@@ -53,30 +77,44 @@ export const Header = () => {
                   />
                 </div>
                 <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
-                  {navigation.map((item) => (
-                    <a
-                      key={item.name}
-                      href={item.href}
+                  {navigation().map((route) => (
+                    <Link
+                      key={route.name}
+                      href={route.href}
                       className={cn(
-                        item.current
+                        route.href === router.pathname
                           ? "border-indigo-500 text-indigo-700"
                           : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
                         "inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium",
                       )}
-                      aria-current={item.current ? "page" : undefined}>
-                      {item.name}
-                    </a>
+                      aria-current={route.href === router.pathname ? "page" : undefined}>
+                      {route.name}
+                    </Link>
                   ))}
                 </div>
               </div>
 
               <div className="hidden sm:ml-6 sm:flex sm:items-center">
+                {!user && (
+                  <>
+                    <Button className="mr-4" variant="ghost" size="sm" asChild>
+                      <Link href="/auth/sign-in">Sign In</Link>
+                    </Button>
+                    <Button size="sm" asChild>
+                      <Link href="/auth/sign-up">Sign Up</Link>
+                    </Button>
+                  </>
+                )}
                 <UserMenu />
               </div>
 
               <div className="-mr-2 flex items-center sm:hidden">
-                {/* Mobile menu button */}
-                <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                <Disclosure.Button
+                  className={buttonVariants({
+                    size: "icon",
+                    variant: "outline",
+                    className: "relative",
+                  })}>
                   <span className="absolute -inset-0.5" />
                   <span className="sr-only">Open main menu</span>
                   {open ? (
@@ -91,25 +129,25 @@ export const Header = () => {
 
           <Disclosure.Panel className="sm:hidden">
             <div className="space-y-1 pb-3 pt-2">
-              {navigation.map((item) => (
+              {navigation().map((route) => (
                 <Disclosure.Button
-                  key={item.name}
-                  as="a"
-                  href={item.href}
+                  key={route.name}
+                  as={Link}
+                  href={route.href}
                   className={cn(
-                    item.current
+                    route.href === router.pathname
                       ? "border-indigo-500 bg-indigo-50 text-indigo-700"
                       : "border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800",
                     "block border-l-4 py-2 pl-3 pr-4 text-base font-medium",
                   )}
-                  aria-current={item.current ? "page" : undefined}>
-                  {item.name}
+                  aria-current={route.href === router.pathname ? "page" : undefined}>
+                  {route.name}
                 </Disclosure.Button>
               ))}
             </div>
 
-            {user && (
-              <div className="border-t border-gray-200 pb-3 pt-4">
+            <div className="grid gap-y-3 border-t border-gray-200 pb-3 pt-4">
+              {user && (
                 <div className="flex items-center px-4">
                   <Avatar className="h-10 w-10">
                     <AvatarImage src={user.photo || undefined} alt="" />
@@ -122,20 +160,20 @@ export const Header = () => {
                     <div className="text-sm font-medium text-gray-500">{user.email}</div>
                   </div>
                 </div>
+              )}
 
-                <div className="mt-3 space-y-1">
-                  {userNavigation.map((item) => (
-                    <Disclosure.Button
-                      key={item.name}
-                      as="a"
-                      href={item.href}
-                      className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">
-                      {item.name}
-                    </Disclosure.Button>
-                  ))}
-                </div>
+              <div className="space-y-1">
+                {userNavigation().map((route) => (
+                  <Disclosure.Button
+                    key={route.name}
+                    as={Link}
+                    href={route.href}
+                    className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">
+                    {route.name}
+                  </Disclosure.Button>
+                ))}
               </div>
-            )}
+            </div>
           </Disclosure.Panel>
         </>
       )}

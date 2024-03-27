@@ -184,7 +184,7 @@ export default function MyCourts() {
                   {page !== 1 && (
                     <PaginationItem>
                       <PaginationPrevious
-                        href={{ pathname: "/profile/my-courts", query: { page: page - 1 } }}
+                        href={{ pathname: "/courts/mine", query: { page: page - 1 } }}
                       />
                     </PaginationItem>
                   )}
@@ -195,7 +195,7 @@ export default function MyCourts() {
                       <PaginationItem key={index}>
                         <PaginationLink
                           isActive={page === index + 1}
-                          href={{ pathname: "/profile/my-courts", query: { page: index + 1 } }}>
+                          href={{ pathname: "/courts/mine", query: { page: index + 1 } }}>
                           {index + 1}
                         </PaginationLink>
                       </PaginationItem>
@@ -209,9 +209,7 @@ export default function MyCourts() {
                     )
                   ) : (
                     <PaginationItem>
-                      <PaginationLink
-                        isActive
-                        href={{ pathname: "/profile/my-courts", query: { page } }}>
+                      <PaginationLink isActive href={{ pathname: "/courts/mine", query: { page } }}>
                         {page}
                       </PaginationLink>
                     </PaginationItem>
@@ -222,7 +220,7 @@ export default function MyCourts() {
                       <PaginationLink
                         isActive={page === courts.totalPages}
                         href={{
-                          pathname: "/profile/my-courts",
+                          pathname: "/courts/mine",
                           query: { page: courts.totalPages },
                         }}>
                         {courts.totalPages}
@@ -233,7 +231,7 @@ export default function MyCourts() {
                   {page !== courts.totalPages && (
                     <PaginationItem>
                       <PaginationNext
-                        href={{ pathname: "/profile/my-courts", query: { page: page + 1 } }}
+                        href={{ pathname: "/courts/mine", query: { page: page + 1 } }}
                       />
                     </PaginationItem>
                   )}

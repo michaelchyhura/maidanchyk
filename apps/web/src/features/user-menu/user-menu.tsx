@@ -12,22 +12,12 @@ import {
   AvatarImage,
 } from "@maidanchyk/ui";
 import { Settings, LogOut } from "lucide-react";
-import { trpc } from "../../server/trpc";
 import { useRouter } from "next/router";
 import { useAuth } from "../../shared/providers/auth";
 import { getInitials } from "../../shared/lib/strings";
 
 export const UserMenu = () => {
-  const router = useRouter();
   const { user } = useAuth();
-
-  const { mutateAsync: signOut } = trpc.auth.signOut.useMutation();
-
-  const handleSignOut = async () => {
-    await signOut();
-
-    router.push("/auth/sign-in");
-  };
 
   if (!user) {
     return null;
@@ -65,9 +55,11 @@ export const UserMenu = () => {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem onClick={handleSignOut}>
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>Sign Out</span>
+        <DropdownMenuItem asChild>
+          <Link href="/api/auth/sign-out">
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Sign Out</span>
+          </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
