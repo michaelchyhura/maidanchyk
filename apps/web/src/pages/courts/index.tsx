@@ -10,13 +10,13 @@ import {
   DrawerTrigger,
   Input,
 } from "@maidanchyk/ui";
-import { useDebouncedCallback } from "use-debounce";
+// import { useDebouncedCallback } from "use-debounce";
 import { CourtEvent } from "@maidanchyk/prisma";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "../../server/trpc";
 import { withUser } from "../../shared/lib/ssr";
 import { StackedLayout } from "../../widgets/layout";
-import { Settings2 } from "lucide-react";
+import { Filter } from "lucide-react";
 import { IVANO_FRANKIVSK_CITY } from "../../shared/constants/google-places";
 import {
   Pagination,
@@ -33,8 +33,8 @@ import { presence } from "../../shared/lib/objects";
 
 export default function Courts() {
   const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
+  // const pathname = usePathname();
+  // const { replace } = useRouter();
 
   const page = parseInt(searchParams.get("page")?.toString() || "1", 10);
   const query = searchParams.get("query")?.toString();
@@ -44,7 +44,7 @@ export default function Courts() {
   const { data, isLoading } = trpc.courts.list.useQuery({
     page,
     limit: 15,
-    query,
+    // query,
     sort: (
       {
         recent: { createdAt: "desc" },
@@ -58,19 +58,19 @@ export default function Courts() {
 
   const courts = data?.items || [];
 
-  const handleQueryChange = useDebouncedCallback((query: string) => {
-    const params = new URLSearchParams(searchParams);
+  // const handleQueryChange = useDebouncedCallback((query: string) => {
+  //   const params = new URLSearchParams(searchParams);
 
-    if (query) {
-      params.set("query", query);
-    } else {
-      params.delete("query");
-    }
+  //   if (query) {
+  //     params.set("query", query);
+  //   } else {
+  //     params.delete("query");
+  //   }
 
-    params.set("page", "1");
+  //   params.set("page", "1");
 
-    replace([pathname, params.toString()].filter(Boolean).join("?"));
-  }, 300);
+  //   replace([pathname, params.toString()].filter(Boolean).join("?"));
+  // }, 300);
 
   return (
     <StackedLayout title="Courts" spacing>
@@ -84,12 +84,12 @@ export default function Courts() {
           <CourtsFilters />
         </div>
 
-        <div className="space-y-4 sm:w-3/4">
+        <div className="space-y-4 sm:w-3/4 sm:space-y-0">
           <div className="flex gap-x-4">
             <Drawer>
               <DrawerTrigger asChild className="sm:hidden">
-                <Button className="min-w-[40px]" variant="default" size="icon">
-                  <Settings2 />
+                <Button>
+                  <Filter className="mr-2" /> Filters
                 </Button>
               </DrawerTrigger>
               <DrawerContent>
@@ -111,11 +111,11 @@ export default function Courts() {
               </DrawerContent>
             </Drawer>
 
-            <Input
+            {/* <Input
               defaultValue={query}
               onChange={(e) => handleQueryChange(e.target.value)}
               placeholder="Search..."
-            />
+            /> */}
           </div>
 
           <CourtsGridList courts={courts} loading={isLoading}>
@@ -149,9 +149,11 @@ export default function Courts() {
                     ))}
 
                   {[1, 2, data.totalPages].includes(page) ? (
-                    <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem>
+                    data.totalPages > 4 && (
+                      <PaginationItem>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    )
                   ) : (
                     <PaginationItem>
                       <PaginationLink

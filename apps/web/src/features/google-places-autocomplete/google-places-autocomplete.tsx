@@ -18,10 +18,17 @@ type Props = {
   label?: string;
   value: GooglePlace | null;
   onChange: (suggestion: google.maps.places.AutocompletePrediction) => void;
+  disabled?: boolean;
 };
 
 // TODO: Wrap into `forwardRef` and add support for error state
-export const GooglePlacesAutocomplete = ({ className, label, value, onChange }: Props) => {
+export const GooglePlacesAutocomplete = ({
+  className,
+  label,
+  value,
+  onChange,
+  disabled,
+}: Props) => {
   const {
     // ready,
     suggestions: { data },
@@ -46,7 +53,7 @@ export const GooglePlacesAutocomplete = ({ className, label, value, onChange }: 
       className={cn("grid gap-y-2", className)}
       onChange={handleChange}
       value={value}
-      disabled>
+      disabled={disabled}>
       <Combobox.Label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
         {label}
       </Combobox.Label>

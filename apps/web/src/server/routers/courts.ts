@@ -30,6 +30,7 @@ const list = publicProcedure
           ]),
         )
         .optional(),
+      userId: z.string().optional(),
     }),
   )
   .query(async ({ ctx, input }) => {
@@ -47,6 +48,10 @@ const list = publicProcedure
 
     if (input.events) {
       Object.assign(where, { events: { hasSome: input.events } });
+    }
+
+    if (input.userId) {
+      Object.assign(where, { userId: input.userId });
     }
 
     const [items, count] = await ctx.prisma.$transaction([
@@ -83,17 +88,21 @@ const list = publicProcedure
     };
   });
 
-const get = publicProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
-  return ctx.prisma.court.findUnique({
-    where: {
-      id: input.id,
-    },
-    include: {
-      location: true,
-      photos: true,
-    },
+const get = publicProcedure
+  .input(z.object({ id: z.string(), userId: z.string().optional() }))
+  .query(({ ctx, input }) => {
+    return ctx.prisma.court.findUnique({
+      where: {
+        id: input.id,
+        userId: input.userId,
+      },
+      include: {
+        city: true,
+        location: true,
+        photos: true,
+      },
+    });
   });
-});
 
 const create = protectedProcedure
   .input(
@@ -125,6 +134,7 @@ const create = protectedProcedure
       photos: z
         .array(
           z.object({
+            size: z.number(),
             pathname: z.string(),
             contentType: z.string(),
             url: z.string(),
@@ -141,6 +151,7 @@ const create = protectedProcedure
             main_text: z.string(),
             secondary_text: z.string(),
           }),
+          types: z.array(z.string()),
         })
         .refine((value) => value, {
           message: "City is required",
@@ -150,7 +161,6 @@ const create = protectedProcedure
           placeId: z.string(),
           formattedAddress: z.string(),
           lat: z.number(),
-
           lng: z.number(),
         })
         .refine((value) => value, {
@@ -164,7 +174,7 @@ const create = protectedProcedure
       contactPhone: z.string().regex(PHONE_REG_EXP, { message: "Invalid phone number" }),
     }),
   )
-  .mutation(async ({ ctx, input }) => {
+  .mutation(({ ctx, input }) => {
     return ctx.prisma.court.create({
       data: {
         name: input.name,
@@ -182,6 +192,7 @@ const create = protectedProcedure
             placeId: input.city.place_id,
             mainText: input.city.structured_formatting.main_text,
             secondaryText: input.city.structured_formatting.secondary_text,
+            types: input.city.types,
           },
         },
         location: {
@@ -202,4 +213,126 @@ const create = protectedProcedure
     });
   });
 
-export const courts = t.router({ list, get, create });
+const update = protectedProcedure
+  .input(
+    z.object({
+      id: z.string(),
+      values: z.object({
+        name: z
+          .string()
+          .min(1, "Name is required")
+          .max(60, "Name should be less then 60 characters long"),
+        description: z
+          .string()
+          .min(1, "Description is required")
+          .max(255, "Description should be less then 255 characters long"),
+        price: z.string().min(1, "Price is required"),
+        events: z
+          .array(
+            z.enum([
+              CourtEvent.BASKETBALL,
+              CourtEvent.VOLLEYBALL,
+              CourtEvent.MINI_FOOTBALL,
+              CourtEvent.TENNIS,
+              CourtEvent.BADMINTON,
+              CourtEvent.HANDBALL,
+              CourtEvent.MULTI_SPORT,
+            ]),
+          )
+          .refine((value) => value.some((item) => item), {
+            message: "You have to select at least one event type",
+          }),
+        photos: z
+          .array(
+            z.object({
+              size: z.number(),
+              pathname: z.string(),
+              contentType: z.string(),
+              url: z.string(),
+            }),
+          )
+          .refine((value) => value.some((item) => item), {
+            message: "You need to attach at least one file",
+          }),
+        city: z
+          .object({
+            description: z.string(),
+            place_id: z.string(),
+            structured_formatting: z.object({
+              main_text: z.string(),
+              secondary_text: z.string(),
+            }),
+            types: z.array(z.string()),
+          })
+          .refine((value) => value, {
+            message: "City is required",
+          }),
+        location: z
+          .object({
+            placeId: z.string(),
+            formattedAddress: z.string(),
+            lat: z.number(),
+            lng: z.number(),
+          })
+          .refine((value) => value, {
+            message: "Location is required",
+          }),
+        contactPerson: z.string().min(1, "Contact Person is required"),
+        contactEmail: z
+          .string()
+          .min(1, { message: "Email is required" })
+          .email("Invalid email address"),
+        contactPhone: z.string().regex(PHONE_REG_EXP, { message: "Invalid phone number" }),
+      }),
+    }),
+  )
+  .mutation(({ ctx, input }) => {
+    return ctx.prisma.court.update({
+      where: {
+        id: input.id,
+      },
+      data: {
+        name: input.values.name,
+        description: input.values.description,
+        price: parseFloat(input.values.price),
+        events: input.values.events,
+        photos: {
+          deleteMany: {
+            courtId: input.id,
+          },
+          createMany: {
+            data: input.values.photos,
+          },
+        },
+        city: {
+          update: {
+            description: input.values.city.description,
+            placeId: input.values.city.place_id,
+            mainText: input.values.city.structured_formatting.main_text,
+            secondaryText: input.values.city.structured_formatting.secondary_text,
+            types: input.values.city.types,
+          },
+        },
+        location: {
+          update: input.values.location,
+        },
+        contactPerson: input.values.contactPerson,
+        contactEmail: input.values.contactEmail,
+        contactPhone: input.values.contactPhone,
+      },
+      select: {
+        id: true,
+      },
+    });
+  });
+
+const del = protectedProcedure.input(z.object({ id: z.string() })).mutation(({ ctx, input }) => {
+  return ctx.prisma.court.delete({
+    where: {
+      id: input.id,
+      userId: ctx.session.userId,
+    },
+  });
+});
+
+export const courts = t.router({ list, get, create, update, delete: del });

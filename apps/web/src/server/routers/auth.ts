@@ -31,13 +31,13 @@ const signUp = publicProcedure
       },
       select: {
         id: true,
-        role: true
+        role: true,
       },
     });
 
     ctx.session.isAuthenticated = true;
     ctx.session.userId = user.id;
-    ctx.session.role = user.role
+    ctx.session.role = user.role;
     ctx.session.emailVerified = workosUser.emailVerified;
     ctx.session.createdAt = new Date().toISOString();
 
@@ -63,21 +63,19 @@ const signIn = publicProcedure
         clientId: process.env.WORKOS_CLIENT_ID!,
       });
 
-      console.log("user", workosUser);
-
       const user = await ctx.prisma.user.findUniqueOrThrow({
         where: {
           workosId: workosUser.id,
         },
         select: {
           id: true,
-          role: true
+          role: true,
         },
       });
 
       ctx.session.isAuthenticated = true;
       ctx.session.userId = user.id;
-      ctx.session.role = user.role
+      ctx.session.role = user.role;
       ctx.session.emailVerified = workosUser.emailVerified;
       ctx.session.createdAt = new Date().toISOString();
 
@@ -93,7 +91,7 @@ const signIn = publicProcedure
             },
             select: {
               id: true,
-              role:true,
+              role: true,
               workosId: true,
             },
           });
@@ -102,7 +100,7 @@ const signIn = publicProcedure
 
           ctx.session.isAuthenticated = true;
           ctx.session.userId = user.id;
-          ctx.session.role = user.role
+          ctx.session.role = user.role;
           ctx.session.emailVerified = false;
           ctx.session.createdAt = new Date().toISOString();
 

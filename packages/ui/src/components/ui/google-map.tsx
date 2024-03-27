@@ -14,6 +14,7 @@ interface Props {
   children?: ReactNode;
 }
 
+// TODO: change the center when default center prop is changed
 export function GoogleMap({
   defaultCenter,
   onCenterChange,

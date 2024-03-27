@@ -9,6 +9,7 @@ import { getInitials } from "../../shared/lib/strings";
 
 const navigation = [
   { name: "Courts", href: "/courts", current: true },
+  { name: "My Courts", href: "/profile/my-courts", current: false },
   // { name: "Team", href: "#", current: false },
   // { name: "Projects", href: "#", current: false },
   // { name: "Calendar", href: "#", current: false },

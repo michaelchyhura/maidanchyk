@@ -56,7 +56,7 @@ export const UserAvatarForm = () => {
       });
 
       if (user?.photo) {
-        await axios.delete(`/api/avatar/delete?url=${user.photo}`);
+        await axios.delete(`/api/blob/delete?url=${user.photo}`);
       }
 
       await updateUser({ photo: blob.url });
@@ -73,7 +73,7 @@ export const UserAvatarForm = () => {
     setLoading(true);
 
     try {
-      await axios.delete(`/api/avatar/delete?url=${user?.photo}`);
+      await axios.delete(`/api/blob/delete?url=${user?.photo}`);
       await updateUser({ photo: null });
       await refetch();
 

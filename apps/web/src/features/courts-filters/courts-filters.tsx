@@ -1,6 +1,7 @@
 import { CourtEvent } from "@maidanchyk/prisma";
 import {
   Button,
+  Label,
   Select,
   SelectContent,
   SelectItem,
@@ -64,33 +65,44 @@ export const CourtsFilters = () => {
 
   return (
     <>
-      <Select defaultValue={sort} onValueChange={handleOrderChange}>
-        <SelectTrigger>
-          <SelectValue placeholder="Order by" />
-        </SelectTrigger>
-        <SelectContent>
-          {ORDER_BY_OPTIONS.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
+      <div className="space-y-2">
+        <Label>Sort by</Label>
+        <Select defaultValue={sort} onValueChange={handleOrderChange}>
+          <SelectTrigger>
+            <SelectValue placeholder="Order by" />
+          </SelectTrigger>
+          <SelectContent>
+            {ORDER_BY_OPTIONS.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <GooglePlacesAutocomplete
+        label="City"
+        value={IVANO_FRANKIVSK_CITY}
+        onChange={() => {}}
+        disabled
+      />
+
+      <div className="space-y-2">
+        <Label>Events</Label>
+        <ul className="flex flex-wrap gap-2">
+          {COURT_EVENTS.map((event) => (
+            <li key={event.value}>
+              <Button
+                size="sm"
+                variant={events?.includes(event.value) ? "default" : "secondary"}
+                onClick={() => handleEventsChange(event.value)}>
+                {event.label}
+              </Button>
+            </li>
           ))}
-        </SelectContent>
-      </Select>
-
-      <GooglePlacesAutocomplete value={IVANO_FRANKIVSK_CITY} onChange={() => {}} />
-
-      <ul className="flex flex-wrap gap-2">
-        {COURT_EVENTS.map((event) => (
-          <li key={event.value}>
-            <Button
-              size="sm"
-              variant={events?.includes(event.value) ? "default" : "secondary"}
-              onClick={() => handleEventsChange(event.value)}>
-              {event.label}
-            </Button>
-          </li>
-        ))}
-      </ul>
+        </ul>
+      </div>
     </>
   );
 };

@@ -2,12 +2,15 @@ import Image from "next/image";
 import { useDropzone } from "react-dropzone";
 import { ImageUp, Images, Trash2 } from "lucide-react";
 import { Button, cn } from "@maidanchyk/ui";
+import { CourtAsset } from "@maidanchyk/prisma";
 import { uniq } from "../../shared/lib/arrays";
 import { toHumanSize } from "../../shared/lib/files";
 
+type Asset = Omit<CourtAsset, "createdAt" | "updatedAt">;
+
 type Props = {
-  value: File[];
-  onChange: (files: File[]) => void;
+  value: (File | Asset)[];
+  onChange: (files: (File | Asset)[]) => void;
   onError: (errors: string[]) => void;
   maxFiles?: number;
   disabled?: boolean;
@@ -86,25 +89,33 @@ export const Dropzone = ({ value, onChange, onError, maxFiles, disabled }: Props
   );
 };
 
-const Thumbnails = ({ files, onDelete }: { files: File[]; onDelete: (index: number) => void }) => {
+const Thumbnails = ({
+  files,
+  onDelete,
+}: {
+  files: (File | Asset)[];
+  onDelete: (index: number) => void;
+}) => {
   return (
     <ul className="space-y-2">
       {files.map((file, index) => (
         <li
-          key={file.name}
+          key={file instanceof File ? file.name : file.id}
           className="flex items-center justify-between space-x-4 rounded-lg border p-4 shadow-sm">
           <div className="flex space-x-4">
             <div className="relative h-14 w-14">
               <Image
                 className="rounded-md object-cover"
-                src={URL.createObjectURL(file)}
+                src={file instanceof File ? URL.createObjectURL(file) : file.url}
                 alt="Photo by Drew Beamer"
                 fill
               />
             </div>
 
             <div className="space-y-">
-              <p className="text-sm font-medium leading-none">{file.name}</p>
+              <p className="text-sm font-medium leading-none">
+                {file instanceof File ? file.name : file.pathname}
+              </p>
               <p className="text-sm text-zinc-500">{toHumanSize(file.size)}</p>
             </div>
           </div>

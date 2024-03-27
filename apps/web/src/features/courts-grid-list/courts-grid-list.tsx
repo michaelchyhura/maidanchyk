@@ -1,5 +1,12 @@
 import { Court, CourtAsset, CourtLocation } from "@maidanchyk/prisma";
-import { AspectRatio, Skeleton } from "@maidanchyk/ui";
+import {
+  AspectRatio,
+  Skeleton,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@maidanchyk/ui";
 import { MapPin, SearchX } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -33,11 +40,22 @@ export const CourtsGridList = ({ courts, loading, children }: Props) => {
                 />
               </AspectRatio>
               <h4 className="mb-1 line-clamp-2 font-semibold tracking-tight">{court.name}</h4>
-              <p className="mb-1 line-clamp-2 text-sm text-zinc-500">{court.description}</p>
-              <p className="mb-4 inline-flex items-center justify-start text-sm text-zinc-500">
-                <MapPin className="mr-1 h-4 w-4 min-w-[16px]" />{" "}
-                <span className="line-clamp-1">{court.location.formattedAddress}</span>
-              </p>
+              {/* <p className="mb-1 line-clamp-2 text-sm text-zinc-500">{court.description}</p> */}
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <p className="mb-3 inline-flex items-center justify-start text-sm text-zinc-500">
+                      <MapPin className="mr-1 h-4 w-4 min-w-[16px]" />{" "}
+                      <span className="line-clamp-1">{court.location.formattedAddress}</span>
+                    </p>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{court.location.formattedAddress}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
               <div className="flex items-center justify-between">
                 <p className="text-lg font-semibold">{court.price}₴</p>
               </div>
