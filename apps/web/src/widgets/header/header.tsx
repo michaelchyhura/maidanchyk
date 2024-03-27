@@ -64,7 +64,7 @@ export const Header = () => {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 justify-between">
               <div className="flex">
-                <div className="flex flex-shrink-0 items-center">
+                <Link className="flex flex-shrink-0 items-center" href="/">
                   <img
                     className="block h-8 w-auto lg:hidden"
                     src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
@@ -75,7 +75,7 @@ export const Header = () => {
                     src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
                     alt="Maidanchyk"
                   />
-                </div>
+                </Link>
                 <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
                   {navigation().map((route) => (
                     <Link
