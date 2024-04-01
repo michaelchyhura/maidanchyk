@@ -50,7 +50,7 @@ export const Dropzone = ({ value, onChange, onError, maxFiles, disabled }: Props
       <div
         {...getRootProps({
           className: cn(
-            "mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10",
+            "mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
             { "opacity-30": disabled },
             { "bg-blue-50": isDragActive },
           ),
@@ -65,7 +65,7 @@ export const Dropzone = ({ value, onChange, onError, maxFiles, disabled }: Props
             <label
               htmlFor="file-upload"
               className={cn(
-                "relative cursor-pointer rounded-md font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500",
+                "relative cursor-pointer rounded-md font-semibold text-orange-600 focus-within:outline-none focus-within:ring-1 focus-within:ring-orange-600 focus-within:ring-offset-2 hover:text-orange-500",
                 { "cursor-default": disabled },
               )}>
               <span>Upload a file</span>

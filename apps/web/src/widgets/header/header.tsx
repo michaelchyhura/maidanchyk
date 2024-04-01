@@ -67,12 +67,12 @@ export const Header = () => {
                 <Link className="flex flex-shrink-0 items-center" href="/">
                   <img
                     className="block h-8 w-auto lg:hidden"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                    src="https://tailwindui.com/img/logos/mark.svg?color=orange&shade=500"
                     alt="Maidanchyk"
                   />
                   <img
                     className="hidden h-8 w-auto lg:block"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                    src="https://tailwindui.com/img/logos/mark.svg?color=orange&shade=500"
                     alt="Maidanchyk"
                   />
                 </Link>
@@ -83,7 +83,7 @@ export const Header = () => {
                       href={route.href}
                       className={cn(
                         route.href === router.pathname
-                          ? "border-indigo-500 text-indigo-700"
+                          ? "border-orange-500 text-orange-700"
                           : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
                         "inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium",
                       )}
@@ -136,7 +136,7 @@ export const Header = () => {
                   href={route.href}
                   className={cn(
                     route.href === router.pathname
-                      ? "border-indigo-500 bg-indigo-50 text-indigo-700"
+                      ? "border-orange-500 bg-orange-50 text-orange-700"
                       : "border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800",
                     "block border-l-4 py-2 pl-3 pr-4 text-base font-medium",
                   )}

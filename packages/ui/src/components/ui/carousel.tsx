@@ -1,6 +1,6 @@
 import * as React from "react";
 import useEmblaCarousel, { type UseEmblaCarouselType } from "embla-carousel-react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { Button } from "./button";
 
@@ -190,7 +190,7 @@ const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ComponentProp
         size={size}
         variant={variant}
         {...props}>
-        <ArrowLeft className="h-4 w-4" />
+        <ArrowLeftIcon className="h-4 w-4" />
         <span className="sr-only">Previous slide</span>
       </Button>
     );
@@ -217,7 +217,7 @@ const CarouselNext = React.forwardRef<HTMLButtonElement, React.ComponentProps<ty
         size={size}
         variant={variant}
         {...props}>
-        <ArrowRight className="h-4 w-4" />
+        <ArrowRightIcon className="h-4 w-4" />
         <span className="sr-only">Next slide</span>
       </Button>
     );

@@ -75,7 +75,7 @@ export const SignInForm = () => {
               <FormDescription>
                 <Link
                   href="/auth/forgot-password"
-                  className="mt-2 text-sm font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                  className="mt-2 text-sm font-semibold leading-6 text-orange-600 hover:text-orange-500">
                   Forgot Password?
                 </Link>
               </FormDescription>

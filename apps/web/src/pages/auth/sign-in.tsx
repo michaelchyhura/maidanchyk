@@ -8,7 +8,7 @@ export default function SignIn() {
       <div>
         <img
           className="h-10 w-auto"
-          src="https://tailwindui.com/img/logos/mark.svg?color=zink&shade=600"
+          src="https://tailwindui.com/img/logos/mark.svg?color=orange&shade=500"
           alt="Maidanchyk"
         />
         <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign in</h2>
@@ -16,7 +16,7 @@ export default function SignIn() {
           Don't have an account?{" "}
           <Link
             href="/auth/sign-up"
-            className="font-semibold text-indigo-600 hover:text-indigo-500">
+            className="font-semibold text-orange-600 hover:text-orange-500">
             Sign up
           </Link>
         </p>

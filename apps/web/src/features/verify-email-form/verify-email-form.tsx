@@ -9,6 +9,7 @@ import {
   FormMessage,
   InputOTP,
   InputOTPGroup,
+  InputOTPSeparator,
   InputOTPSlot,
   useToast,
 } from "@maidanchyk/ui";
@@ -68,22 +69,24 @@ export const VerifyEmailForm = () => {
             <FormItem>
               <FormLabel>Verification Code</FormLabel>
               <FormControl>
-                <InputOTP
-                  maxLength={6}
-                  render={({ slots }) => (
-                    <InputOTPGroup>
-                      {slots.map((slot, index) => (
-                        <InputOTPSlot key={index} {...slot} />
-                      ))}{" "}
-                    </InputOTPGroup>
-                  )}
-                  {...field}
-                />
+                <InputOTP maxLength={6} {...field}>
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                  </InputOTPGroup>
+                  <InputOTPSeparator />
+                  <InputOTPGroup>
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                  </InputOTPGroup>
+                </InputOTP>
               </FormControl>
               <FormDescription>
                 Didn't received any email?{" "}
                 <button
-                  className="text-sm font-semibold leading-6 text-indigo-600 hover:text-indigo-500 disabled:text-indigo-300"
+                  className="text-sm font-semibold leading-6 text-orange-600 hover:text-orange-500 disabled:text-orange-300"
                   type="button"
                   onClick={handleResend}
                   disabled={isLoading}>
@@ -95,7 +98,9 @@ export const VerifyEmailForm = () => {
           )}
         />
 
-        <Button type="submit">Verify</Button>
+        <Button type="submit" disabled={form.formState.isLoading}>
+          Verify
+        </Button>
       </form>
     </Form>
   );

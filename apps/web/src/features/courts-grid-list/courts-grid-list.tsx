@@ -30,7 +30,9 @@ export const CourtsGridList = ({ courts, loading, children }: Props) => {
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {courts.map((court) => (
           <li key={court.id}>
-            <Link className="group block" href={`/courts/${court.id}`}>
+            <Link
+              className="focus-visible:ring-ring group block rounded-md focus-visible:outline-none focus-visible:ring-1"
+              href={`/courts/${court.id}`}>
               <AspectRatio className="mb-2 overflow-hidden rounded-md" ratio={1}>
                 <Image
                   className="object-cover transition duration-300 ease-in-out group-hover:scale-105 group-hover:opacity-80"
@@ -44,7 +46,7 @@ export const CourtsGridList = ({ courts, loading, children }: Props) => {
 
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger>
+                  <TooltipTrigger className="focus-visible:ring-ring rounded-md focus-visible:outline-none focus-visible:ring-1">
                     <p className="mb-3 inline-flex items-center justify-start text-sm text-zinc-500">
                       <MapPin className="mr-1 h-4 w-4 min-w-[16px]" />{" "}
                       <span className="line-clamp-1">{court.location.formattedAddress}</span>

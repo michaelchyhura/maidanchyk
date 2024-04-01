@@ -12,7 +12,6 @@ import {
   AvatarImage,
 } from "@maidanchyk/ui";
 import { Settings, LogOut } from "lucide-react";
-import { useRouter } from "next/router";
 import { useAuth } from "../../shared/providers/auth";
 import { getInitials } from "../../shared/lib/strings";
 
@@ -26,7 +25,7 @@ export const UserMenu = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="relative ml-3 flex max-w-xs items-center rounded-full bg-white text-sm hover:outline-none hover:ring-2 hover:ring-indigo-500 hover:ring-offset-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+        <button className="relative ml-3 flex max-w-xs items-center rounded-full bg-white text-sm hover:outline-none hover:ring-2 hover:ring-orange-500 hover:ring-offset-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
           <span className="absolute -inset-1.5" />
           <span className="sr-only">Open user menu</span>
           <Avatar className="h-8 w-8">
