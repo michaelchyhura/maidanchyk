@@ -31,7 +31,7 @@ export const CourtsGridList = ({ courts, loading, children }: Props) => {
         {courts.map((court) => (
           <li key={court.id}>
             <Link
-              className="focus-visible:ring-ring group block rounded-md focus-visible:outline-none focus-visible:ring-1"
+              className="focus-visible:ring-ring ring-offset-background group block rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
               href={`/courts/${court.id}`}>
               <AspectRatio className="mb-2 overflow-hidden rounded-md" ratio={1}>
                 <Image
@@ -46,8 +46,8 @@ export const CourtsGridList = ({ courts, loading, children }: Props) => {
 
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger className="focus-visible:ring-ring rounded-md focus-visible:outline-none focus-visible:ring-1">
-                    <p className="mb-3 inline-flex items-center justify-start text-sm text-zinc-500">
+                  <TooltipTrigger className="focus-visible:ring-ring ring-offset-background rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2">
+                    <p className="inline-flex items-center justify-start text-sm text-zinc-500">
                       <MapPin className="mr-1 h-4 w-4 min-w-[16px]" />{" "}
                       <span className="line-clamp-1">{court.location.formattedAddress}</span>
                     </p>
@@ -58,7 +58,7 @@ export const CourtsGridList = ({ courts, loading, children }: Props) => {
                 </Tooltip>
               </TooltipProvider>
 
-              <div className="flex items-center justify-between">
+              <div className="mt-3 flex items-center justify-between">
                 <p className="text-lg font-semibold">{court.price}₴</p>
               </div>
             </Link>

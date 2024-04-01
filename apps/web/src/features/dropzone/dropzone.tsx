@@ -50,7 +50,7 @@ export const Dropzone = ({ value, onChange, onError, maxFiles, disabled }: Props
       <div
         {...getRootProps({
           className: cn(
-            "mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+            "mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10 focus-visible:outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring",
             { "opacity-30": disabled },
             { "bg-blue-50": isDragActive },
           ),
