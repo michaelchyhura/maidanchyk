@@ -110,7 +110,7 @@ const create = protectedProcedure
       name: z
         .string()
         .min(1, "Name is required")
-        .max(60, "Name should be less then 60 characters long"),
+        .max(100, "Name should be less then 100 characters long"),
       description: z
         .string()
         .min(1, "Description is required")
@@ -221,7 +221,7 @@ const update = protectedProcedure
         name: z
           .string()
           .min(1, "Name is required")
-          .max(60, "Name should be less then 60 characters long"),
+          .max(100, "Name should be less then 100 characters long"),
         description: z
           .string()
           .min(1, "Description is required")

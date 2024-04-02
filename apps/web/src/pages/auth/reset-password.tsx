@@ -4,7 +4,7 @@ import { withUser } from "../../shared/lib/ssr";
 
 export default function ResetPassword() {
   return (
-    <StackedLayout title="Reset Password">
+    <StackedLayout title="Відновлення пароля">
       <ResetPasswordForm />
     </StackedLayout>
   );

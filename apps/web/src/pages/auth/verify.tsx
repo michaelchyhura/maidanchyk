@@ -5,13 +5,13 @@ import { withUser } from "../../shared/lib/ssr";
 
 export default function Verify() {
   return (
-    <StackedLayout title="Verify your email">
+    <StackedLayout title="Підтвердження електронної пошти">
       <Card>
         <CardHeader>
-          <CardTitle>Please enter the verification code sent to your email</CardTitle>
+          <CardTitle>Дякуємо за реєстрацію!</CardTitle>
           <CardDescription>
-            We have sent a verification code to your email. Please enter it below to complete your
-            sign up process
+            Для завершення процесу реєстрації, будь ласка, введіть код підтвердження, який був
+            надісланий на вашу електронну пошту
           </CardDescription>
         </CardHeader>
         <CardContent>

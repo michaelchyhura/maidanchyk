@@ -37,10 +37,10 @@ export const SignInForm = () => {
       await signIn(values);
 
       router.push("/");
-    } catch (error) {
+    } catch {
       toast({
-        title: "Something went wrong. Please try again",
-        description: (error as Error).message,
+        title: "Упс, щось трапилось...",
+        description: "Будь ласка, спробуйте ще раз",
         variant: "destructive",
       });
     }
@@ -68,7 +68,7 @@ export const SignInForm = () => {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Пароль</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
               </FormControl>
@@ -76,7 +76,7 @@ export const SignInForm = () => {
                 <Link
                   href="/auth/forgot-password"
                   className="mt-2 text-sm font-semibold leading-6 text-orange-600 hover:text-orange-500">
-                  Forgot Password?
+                  Забули пароль?
                 </Link>
               </FormDescription>
               <FormMessage />
@@ -85,7 +85,7 @@ export const SignInForm = () => {
         />
 
         <Button className="w-full" type="submit" disabled={form.formState.isSubmitting}>
-          Sign In
+          Увійти
         </Button>
       </form>
     </Form>

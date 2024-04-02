@@ -1,25 +1,24 @@
 import Link from "next/link";
 import { AuthLayout } from "../../../widgets/layout";
 import { SignUpForm } from "../../../features/sign-up-form";
+import Image from "next/image";
 
 export default function SignUp() {
   return (
     <AuthLayout>
       <div>
-        <img
-          className="h-10 w-auto"
-          src="https://tailwindui.com/img/logos/mark.svg?color=orange&shade=500"
-          alt="Maidanchyk"
-        />
+        <Link href="/">
+          <Image src="/assets/logo-icon.png" alt="" height={40} width={32} />
+        </Link>
         <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          Create new account
+          Ласкаво просимо до Майданчика!
         </h2>
         <p className="mt-2 text-sm leading-6 text-gray-500">
-          Already a member?{" "}
+          Маєте обліковий запис?{" "}
           <Link
             href="/auth/sign-in"
             className="font-semibold text-orange-600 hover:text-orange-500">
-            Sign in
+            Увійти
           </Link>
         </p>
       </div>

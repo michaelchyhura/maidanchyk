@@ -40,9 +40,13 @@ export const UserForm = () => {
       });
       await refetch();
 
-      toast({ title: "Profile successfully updated" });
+      toast({ title: "Профіль успішно оновлено" });
     } catch (error) {
-      toast({ title: "Something went wrong. Please try again", variant: "destructive" });
+      toast({
+        title: "Упс, щось трапилось...",
+        description: "Будь ласка, спробуйте ще раз",
+        variant: "destructive",
+      });
     }
   };
 
@@ -54,7 +58,7 @@ export const UserForm = () => {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Full Name</FormLabel>
+              <FormLabel>Ім'я та прізвище</FormLabel>
               <FormControl>
                 <Input placeholder="Jon Doe" {...field} />
               </FormControl>
@@ -83,7 +87,7 @@ export const UserForm = () => {
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Phone Number</FormLabel>
+                <FormLabel>Телефон</FormLabel>
                 <FormControl>
                   <Input placeholder="+380123456789" {...field} />
                 </FormControl>
@@ -94,7 +98,7 @@ export const UserForm = () => {
         </div>
 
         <Button type="submit" disabled={form.formState.isSubmitting}>
-          Save
+          Зберегти зміни
         </Button>
       </form>
     </Form>

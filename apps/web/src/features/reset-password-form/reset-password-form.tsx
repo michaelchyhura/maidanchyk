@@ -33,10 +33,14 @@ export const ResetPasswordForm = () => {
     try {
       await resetPassword({ token: router.query.token as string, password: values.password });
 
-      toast({ title: "Password changed successfully" });
+      toast({ title: "Новий пароль успішно збережено" });
       router.push("/");
     } catch (error) {
-      toast({ title: "Something went wrong. Please try again", variant: "destructive" });
+      toast({
+        title: "Упс, щось трапилось...",
+        description: "Будь ласка, спробуйте ще раз",
+        variant: "destructive",
+      });
     }
   };
 
@@ -48,7 +52,7 @@ export const ResetPasswordForm = () => {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>New Password</FormLabel>
+              <FormLabel>Новий пароль</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
               </FormControl>
@@ -58,7 +62,7 @@ export const ResetPasswordForm = () => {
         />
 
         <Button type="submit" disabled={form.formState.isSubmitting}>
-          Save
+          Продовжити
         </Button>
       </form>
     </Form>

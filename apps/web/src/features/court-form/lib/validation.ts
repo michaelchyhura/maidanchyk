@@ -3,15 +3,12 @@ import { CourtEvent } from "@maidanchyk/prisma";
 import { PHONE_REG_EXP } from "../../../shared/lib/regexp";
 
 export const courtSchema = z.object({
-  name: z
-    .string()
-    .min(1, "Name is required")
-    .max(60, "Name should be less then 60 characters long"),
+  name: z.string().min(1, "Обов'язкове поле").max(100, "Назва повинна бути менше ніж 100 символів"),
   description: z
     .string()
-    .min(1, "Description is required")
-    .max(255, "Description should be less then 255 characters long"),
-  price: z.string().min(1, "Price is required"),
+    .min(1, "Обов'язкове поле")
+    .max(255, "Опис повинен бути менше ніж 255 символів"),
+  price: z.string().min(1, "Обов'язкове поле"),
   events: z
     .array(
       z.enum([
@@ -25,10 +22,10 @@ export const courtSchema = z.object({
       ]),
     )
     .refine((value) => value.some((item) => item), {
-      message: "You have to select at least one event type",
+      message: "Виберіть принаймні один вид активності",
     }),
   photos: z.array(z.any()).refine((value) => value.some((item) => item), {
-    message: "You need to attach at least one file",
+    message: "Прикріпіть принаймні один файл",
   }),
   city: z
     .object({
@@ -41,13 +38,16 @@ export const courtSchema = z.object({
       types: z.array(z.string()),
     })
     .refine((value) => value, {
-      message: "City is required",
+      message: "Обов'язкове поле",
     }),
   location: z.object({
     lat: z.number(),
     lng: z.number(),
   }),
-  contactPerson: z.string().min(1, "Contact Person is required"),
-  contactEmail: z.string().min(1, { message: "Email is required" }).email("Invalid email address"),
-  contactPhone: z.string().regex(PHONE_REG_EXP, { message: "Invalid phone number" }),
+  contactPerson: z.string().min(1, "Обов'язкове поле"),
+  contactEmail: z.string().min(1, "Обов'язкове поле").email("Неправильний email"),
+  contactPhone: z
+    .string()
+    .min(1, "Обов'язкове поле")
+    .regex(PHONE_REG_EXP, "Неправильний номер телефону"),
 });

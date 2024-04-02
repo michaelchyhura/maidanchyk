@@ -34,17 +34,21 @@ export const ForgotPasswordForm = () => {
   const handleSubmit = async (values: z.infer<typeof forgotPasswordSchema>) => {
     try {
       await sendResetPasswordEmail(values);
-    } catch (error) {
-      toast({ title: "Something went wrong. Please try again", variant: "destructive" });
+    } catch {
+      toast({
+        title: "Упс, щось трапилось...",
+        description: "Будь ласка, спробуйте ще раз",
+        variant: "destructive",
+      });
     }
   };
 
   return form.formState.isSubmitSuccessful ? (
     <Alert>
       <CheckCircle2 className="h-4 w-4" />
-      <AlertTitle>Done!</AlertTitle>
+      <AlertTitle>Готово!</AlertTitle>
       <AlertDescription>
-        Instructions for changing the password have been sent to{" "}
+        Інструкції щодо відновлення вашого пароля були надіслані на{" "}
         <strong>{form.getValues().email}</strong>
       </AlertDescription>
     </Alert>
@@ -66,7 +70,7 @@ export const ForgotPasswordForm = () => {
         />
 
         <Button type="submit" disabled={form.formState.isSubmitting}>
-          Continue
+          Продовжити
         </Button>
       </form>
     </Form>

@@ -39,7 +39,7 @@ export default function ViewCourt() {
     <StackedLayout spacing>
       <div>
         <Button variant="ghost" onClick={router.back}>
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back
+          <ArrowLeft className="mr-2 h-4 w-4" /> Назад
         </Button>
       </div>
 
@@ -125,7 +125,7 @@ const MainInformationSection = ({
           </Button>
         ) : (
           <Button className="w-full" onClick={showPhone}>
-            Show Phone
+            Показати телефон
           </Button>
         )}
       </CardContent>
@@ -137,7 +137,7 @@ const AboutSection = ({ court }: { court: Omit<Court, "createdAt" | "updatedAt">
   return (
     <Card>
       <CardHeader>
-        <CardTitle>About</CardTitle>
+        <CardTitle>Опис</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <ul className="flex flex-wrap gap-1">
@@ -164,7 +164,7 @@ const LocationSection = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Location</CardTitle>
+        <CardTitle>Місцезнахождення</CardTitle>
         <CardDescription className="inline-flex items-center">
           <MapPin className="mr-1 h-4 w-4 min-w-[16px]" /> {court.location.formattedAddress}
         </CardDescription>
@@ -190,7 +190,7 @@ const ContactPersonSection = ({
   return (
     <Card className={className}>
       <CardHeader>
-        <CardTitle>Contact Person</CardTitle>
+        <CardTitle>Контактна особа</CardTitle>
       </CardHeader>
       <CardContent className="flex">
         <div className="mr-4 flex-shrink-0 self-center">

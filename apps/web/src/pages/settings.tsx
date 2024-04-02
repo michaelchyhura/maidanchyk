@@ -26,22 +26,26 @@ export default function Settings() {
       await sendResetPasswordEmail({ email: user?.email || "" });
 
       toast({
-        title: "Reset link successfully sent",
-        description: "Please check your email inbox and follow the instructions",
+        title: "Посилання на скидання паролю успішно відправлено",
+        description: "Будь ласка, перевірте вашу пошту",
       });
     } catch (error) {
-      toast({ title: "Something went wrong. Please try again", variant: "destructive" });
+      toast({
+        title: "Упс, щось трапилось...",
+        description: "Будь ласка, спробуйте ще раз",
+        variant: "destructive",
+      });
     }
   };
 
   return (
-    <StackedLayout title="Settings" spacing>
+    <StackedLayout title="Налаштування" spacing>
       <Card>
         <CardHeader>
-          <CardTitle>Profile Photo</CardTitle>
+          <CardTitle>Фото</CardTitle>
           <CardDescription>
-            Using your profile photo, other people will be able to recognize you, and it will be
-            easier for you to determine which account you are logged into
+            Використовуючи ваше фото профілю, інші люди зможуть вас впізнати, і вам буде легше
+            визначити, в який обліковий запис ви увійшли
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -50,8 +54,8 @@ export default function Settings() {
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Profile Information</CardTitle>
-          <CardDescription>Personal info and options to manage it</CardDescription>
+          <CardTitle>Мій профіль</CardTitle>
+          <CardDescription>Особиста інформація та опції для її управління</CardDescription>
         </CardHeader>
         <CardContent>
           <UserForm />
@@ -59,12 +63,14 @@ export default function Settings() {
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Password</CardTitle>
-          <CardDescription>Request reset password link to your email</CardDescription>
+          <CardTitle>Пароль</CardTitle>
+          <CardDescription>
+            Відправити посилання на скидання пароля на вашу електронну пошту
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Button onClick={handleResetPassword} disabled={isLoading}>
-            Reset Password
+            Скинути пароль
           </Button>
         </CardContent>
       </Card>

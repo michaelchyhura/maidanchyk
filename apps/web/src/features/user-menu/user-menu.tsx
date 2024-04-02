@@ -10,12 +10,17 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
+  cn,
 } from "@maidanchyk/ui";
 import { Settings, LogOut } from "lucide-react";
 import { useAuth } from "../../shared/providers/auth";
 import { getInitials } from "../../shared/lib/strings";
 
-export const UserMenu = () => {
+type Props = {
+  className?: string;
+};
+
+export const UserMenu = ({ className }: Props) => {
   const { user } = useAuth();
 
   if (!user) {
@@ -25,10 +30,14 @@ export const UserMenu = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="relative ml-3 flex max-w-xs items-center rounded-full bg-white text-sm hover:outline-none hover:ring-2 hover:ring-orange-500 hover:ring-offset-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
+        <button
+          className={cn(
+            "relative ml-3 flex max-w-xs items-center rounded-full bg-white text-sm hover:outline-none hover:ring-2 hover:ring-orange-500 hover:ring-offset-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2",
+            className,
+          )}>
           <span className="absolute -inset-1.5" />
           <span className="sr-only">Open user menu</span>
-          <Avatar className="h-8 w-8">
+          <Avatar className="h-10 w-10">
             <AvatarImage src={user.photo || undefined} alt="" />
             <AvatarFallback>{getInitials(user.name || user.email)}</AvatarFallback>
           </Avatar>
@@ -47,7 +56,7 @@ export const UserMenu = () => {
           <DropdownMenuItem asChild>
             <Link href="/settings">
               <Settings className="mr-2 h-4 w-4" />
-              <span>Settings</span>
+              Налаштування
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
@@ -57,7 +66,7 @@ export const UserMenu = () => {
         <DropdownMenuItem asChild>
           <Link href="/api/auth/sign-out">
             <LogOut className="mr-2 h-4 w-4" />
-            <span>Sign Out</span>
+            Вийти
           </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>

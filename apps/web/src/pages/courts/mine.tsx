@@ -19,7 +19,7 @@ import {
   useToast,
 } from "@maidanchyk/ui";
 import Image from "next/image";
-import { FolderPlus, MoreHorizontal, Pencil, PlusCircle, Trash2 } from "lucide-react";
+import { FolderPlus, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/router";
 import dayjs from "dayjs";
 import Link from "next/link";
@@ -57,32 +57,26 @@ export default function MyCourts() {
       await deleteCourt({ id });
       await refetch();
 
-      toast({ title: "Court deleted successfully" });
-    } catch (error) {
+      toast({ title: "Майданчик успішно видалено" });
+    } catch {
       toast({
-        title: "Something went wrong. Please try again",
-        description: (error as Error).message,
+        title: "Упс, щось трапилось...",
+        description: "Будь ласка, спробуйте ще раз",
         variant: "destructive",
       });
     }
   };
 
   return (
-    <StackedLayout title="My Courts" spacing>
-      <p className="text-sm text-zinc-500">
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusantium placeat ducimus, ipsa
-        odit quaerat sequi officiis itaque sit iusto excepturi ratione, deserunt, neque officia
-        distinctio doloribus. Ipsam exercitationem vitae nam.
-      </p>
-
+    <StackedLayout title="Мої Оголошення" spacing>
       {courts ? (
         courts.items.length ? (
           <>
             <div className="flex justify-end">
               <Button className="w-full sm:w-auto" asChild>
                 <Link href="/courts/create">
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  New Court
+                  <Plus className="mr-2 h-4 w-4" />
+                  Створити нове оголошення
                 </Link>
               </Button>
             </div>
@@ -90,17 +84,17 @@ export default function MyCourts() {
             <div className="space-y-20">
               <div>
                 <table className="mt-4 w-full text-gray-500 sm:mt-6">
-                  <caption className="sr-only">Court</caption>
+                  <caption className="sr-only">Майданчик</caption>
                   <thead className="sr-only text-left text-sm text-gray-500 sm:not-sr-only">
                     <tr>
                       <th scope="col" className="py-3 pr-8 font-normal sm:w-2/5 lg:w-1/3">
-                        Court
+                        Назва
                       </th>
                       <th scope="col" className="hidden w-1/5 py-3 pr-8 font-normal sm:table-cell">
-                        Price
+                        Ціна
                       </th>
                       <th scope="col" className="hidden py-3 pr-8 font-normal sm:table-cell">
-                        Published at
+                        Дата Публікації
                       </th>
                     </tr>
                   </thead>
@@ -138,15 +132,15 @@ export default function MyCourts() {
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                <DropdownMenuLabel>Опції</DropdownMenuLabel>
                                 <DropdownMenuItem
                                   onClick={() => router.push(`/courts/edit/${court.id}`)}>
-                                  <Pencil className="mr-2 h-4 w-4" /> Edit
+                                  <Pencil className="mr-2 h-4 w-4" /> Редагувати
                                 </DropdownMenuItem>
 
                                 <AlertDialogTrigger asChild>
                                   <DropdownMenuItem>
-                                    <Trash2 className="mr-2 h-4 w-4" /> Delete
+                                    <Trash2 className="mr-2 h-4 w-4" /> Видалити
                                   </DropdownMenuItem>
                                 </AlertDialogTrigger>
                               </DropdownMenuContent>
@@ -154,18 +148,18 @@ export default function MyCourts() {
 
                             <AlertDialogContent>
                               <AlertDialogHeader>
-                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                <AlertDialogTitle>Ви абсолютно впевнені?</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                  This action cannot be undone. This will permanently delete your
-                                  account and remove your data from our servers.
+                                  Цю дію неможливо скасувати. Вона остаточно видалить дані про
+                                  майданчик з наших серверів
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogCancel>Відмінити</AlertDialogCancel>
                                 <AlertDialogAction
                                   variant="destructive"
                                   onClick={() => handleDeleteCourt(court.id)}>
-                                  Continue
+                                  Видалити
                                 </AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
@@ -179,7 +173,7 @@ export default function MyCourts() {
             </div>
 
             {!!courts?.totalPages && (
-              <Pagination>
+              <Pagination className="py-12">
                 <PaginationContent>
                   {page !== 1 && (
                     <PaginationItem>
@@ -305,14 +299,14 @@ const EmptyState = () => {
     <div className="space-y-4 rounded-md border border-dashed border-zinc-200 p-12 text-center">
       <FolderPlus className="mx-auto h-12 w-12 text-zinc-400" />
       <div>
-        <h3 className="text-sm font-semibold text-zinc-900">No courts yet</h3>
-        <p className="text-sm text-zinc-500">Get started by creating a new court</p>
+        <h3 className="text-sm font-semibold text-zinc-900">Ще немає майданчиків</h3>
+        <p className="text-sm text-zinc-500">Розпочніть, створивши нове оголошення</p>
       </div>
 
       <Button size="sm" asChild>
         <Link href="/courts/create">
-          <PlusCircle className="mr-2 h-4 w-4" />
-          New Court
+          <Plus className="mr-2 h-4 w-4" />
+          Створити нове оголошення
         </Link>
       </Button>
     </div>

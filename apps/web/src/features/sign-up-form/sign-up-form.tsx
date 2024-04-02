@@ -38,10 +38,10 @@ export const SignUpForm = () => {
       await signUp(values);
 
       router.push("/auth/verify");
-    } catch (error) {
+    } catch {
       toast({
-        title: "Something went wrong. Please try again",
-        description: (error as Error).message,
+        title: "Упс, щось трапилось...",
+        description: "Будь ласка, спробуйте ще раз",
         variant: "destructive",
       });
     }
@@ -69,7 +69,7 @@ export const SignUpForm = () => {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Пароль</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
               </FormControl>
@@ -90,7 +90,7 @@ export const SignUpForm = () => {
                       <RadioGroupItem value={UserRole.COURT_OWNER} />
                     </FormControl>
                     <FormLabel className="font-normal">
-                      I'm court owner - looking to host a court
+                      Я власник корта - залучаю нових клієнтів
                     </FormLabel>
                   </FormItem>
                   <FormItem className="flex items-center space-x-3 space-y-0">
@@ -98,7 +98,7 @@ export const SignUpForm = () => {
                       <RadioGroupItem value={UserRole.PLAYER} />
                     </FormControl>
                     <FormLabel className="font-normal">
-                      I'm player - looking for a court or a team
+                      Я гравець - шукаю доступні корти для гри
                     </FormLabel>
                   </FormItem>
                 </RadioGroup>
@@ -109,7 +109,7 @@ export const SignUpForm = () => {
         />
 
         <Button className="w-full" type="submit" disabled={form.formState.isSubmitting}>
-          Sign Up
+          Зареєструватись
         </Button>
       </form>
     </Form>

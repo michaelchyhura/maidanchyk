@@ -39,10 +39,17 @@ export const VerifyEmailForm = () => {
     try {
       await verifyEmail(values);
 
-      toast({ title: "Email verified successfully" });
+      toast({
+        title: "Електронну пошту успішно підтверджено",
+        description: "Ласкаво просимо до Майданчика! 👋",
+      });
       router.push("/");
     } catch (error) {
-      toast({ title: "Something went wrong. Please try again", variant: "destructive" });
+      toast({
+        title: "Упс, щось трапилось...",
+        description: "Будь ласка, спробуйте ще раз",
+        variant: "destructive",
+      });
     }
   };
 
@@ -51,11 +58,15 @@ export const VerifyEmailForm = () => {
       await sendVerificationEmail();
 
       toast({
-        title: "Verification email successfully sent",
-        description: "Please check your inbox and follow the instructions",
+        title: "Лист з підтвердженням успішно надіслано",
+        description: "Будь ласка, перевірте свою поштову скриньку та дотримуйтесь інструкцій",
       });
     } catch (error) {
-      toast({ title: "Something went wrong. Please try again", variant: "destructive" });
+      toast({
+        title: "Упс, щось трапилось...",
+        description: "Будь ласка, спробуйте ще раз",
+        variant: "destructive",
+      });
     }
   };
 
@@ -67,7 +78,7 @@ export const VerifyEmailForm = () => {
           name="code"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Verification Code</FormLabel>
+              <FormLabel>Код підтвердження</FormLabel>
               <FormControl>
                 <InputOTP maxLength={6} {...field}>
                   <InputOTPGroup>
@@ -84,13 +95,13 @@ export const VerifyEmailForm = () => {
                 </InputOTP>
               </FormControl>
               <FormDescription>
-                Didn't received any email?{" "}
+                Не отримали повідомлення?{" "}
                 <button
                   className="text-sm font-semibold leading-6 text-orange-600 hover:text-orange-500 disabled:text-orange-300"
                   type="button"
                   onClick={handleResend}
                   disabled={isLoading}>
-                  Send again
+                  Відправити ще раз
                 </button>
               </FormDescription>
               <FormMessage />
@@ -98,8 +109,8 @@ export const VerifyEmailForm = () => {
           )}
         />
 
-        <Button type="submit" disabled={form.formState.isLoading}>
-          Verify
+        <Button type="submit" disabled={form.formState.isSubmitting}>
+          Продовжити
         </Button>
       </form>
     </Form>

@@ -73,12 +73,7 @@ export default function Courts() {
   // }, 300);
 
   return (
-    <StackedLayout title="Courts" spacing>
-      <p className="text-sm text-zinc-500">
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusantium placeat ducimus, ipsa
-        odit quaerat sequi officiis itaque sit iusto excepturi ratione, deserunt, neque officia
-        distinctio doloribus. Ipsam exercitationem vitae nam.
-      </p>
+    <StackedLayout title="Майданчики" badge={data?.total} spacing>
       <div className="flex flex-col gap-x-4 sm:flex-row">
         <div className="hidden w-1/4 sm:block sm:space-y-4">
           <CourtsFilters />
@@ -88,24 +83,20 @@ export default function Courts() {
           <div className="flex gap-x-4">
             <Drawer>
               <DrawerTrigger asChild className="sm:hidden">
-                <Button>
-                  <Filter className="mr-2" /> Filters
+                <Button className="w-full">
+                  <Filter className="mr-2" /> Фільтри
                 </Button>
               </DrawerTrigger>
               <DrawerContent>
                 <DrawerHeader>
-                  <DrawerTitle>Filters</DrawerTitle>
-                  <DrawerDescription>
-                    Lorem, ipsum dolor sit amet consectetur adipisicing elit
-                  </DrawerDescription>
-
+                  <DrawerTitle>Фільтри</DrawerTitle>
                   <div className="space-y-4 text-left">
                     <CourtsFilters />
                   </div>
                 </DrawerHeader>
                 <DrawerFooter>
                   <DrawerClose>
-                    <Button className="w-full">Apply</Button>
+                    <Button className="w-full">Застосувати</Button>
                   </DrawerClose>
                 </DrawerFooter>
               </DrawerContent>
@@ -120,7 +111,7 @@ export default function Courts() {
 
           <CourtsGridList courts={courts} loading={isLoading}>
             {!!data?.totalPages && (
-              <Pagination>
+              <Pagination className="py-12">
                 <PaginationContent>
                   {page !== 1 && (
                     <PaginationItem>

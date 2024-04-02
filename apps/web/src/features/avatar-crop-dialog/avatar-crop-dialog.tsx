@@ -50,8 +50,10 @@ export const AvatarCropDialog = ({ open, filename, avatar, onSubmit, onClose }: 
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Tune Your Photo</DialogTitle>
-          <DialogDescription>Customize your profile picture with precision</DialogDescription>
+          <DialogTitle>Налаштуйте ваше фото</DialogTitle>
+          <DialogDescription>
+            Змінюйте розмір або вирівнюйте ваше фото, щоб воно виглядало так, як ви бажаєте
+          </DialogDescription>
         </DialogHeader>
 
         <div className="flex items-center justify-center space-x-2">
@@ -85,10 +87,10 @@ export const AvatarCropDialog = ({ open, filename, avatar, onSubmit, onClose }: 
 
         <DialogFooter className="gap-y-2 sm:justify-start">
           <Button type="button" variant="secondary" onClick={onClose} disabled={loading}>
-            Close
+            Закрити
           </Button>
           <Button type="button" onClick={handleSubmit} disabled={loading}>
-            Save
+            Зберегти зміни
           </Button>
         </DialogFooter>
       </DialogContent>

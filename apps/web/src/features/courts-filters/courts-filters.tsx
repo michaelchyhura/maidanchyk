@@ -14,9 +14,9 @@ import { IVANO_FRANKIVSK_CITY } from "../../shared/constants/google-places";
 import { COURT_EVENTS } from "../../shared/constants/options";
 
 const ORDER_BY_OPTIONS = [
-  { label: "Recent", value: "recent" },
-  { label: "Cheapest", value: "cheapest" },
-  { label: "Most Expensive", value: "expensive" },
+  { label: "Найновіші", value: "recent" },
+  { label: "Найдешевші", value: "cheapest" },
+  { label: "Найдорожчі", value: "expensive" },
 ];
 
 export const CourtsFilters = () => {
@@ -66,10 +66,10 @@ export const CourtsFilters = () => {
   return (
     <>
       <div className="space-y-2">
-        <Label>Sort by</Label>
+        <Label>Сортувати за</Label>
         <Select defaultValue={sort} onValueChange={handleOrderChange}>
           <SelectTrigger>
-            <SelectValue placeholder="Order by" />
+            <SelectValue placeholder="Сортувати за" />
           </SelectTrigger>
           <SelectContent>
             {ORDER_BY_OPTIONS.map((option) => (
@@ -82,14 +82,14 @@ export const CourtsFilters = () => {
       </div>
 
       <GooglePlacesAutocomplete
-        label="City"
+        label="Місто"
         value={IVANO_FRANKIVSK_CITY}
         onChange={() => {}}
         disabled
       />
 
       <div className="space-y-2">
-        <Label>Events</Label>
+        <Label>Види активностей</Label>
         <ul className="flex flex-wrap gap-2">
           {COURT_EVENTS.map((event) => (
             <li key={event.value}>

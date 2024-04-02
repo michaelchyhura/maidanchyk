@@ -40,7 +40,7 @@ export const UserAvatarForm = () => {
       if (file.size > 3 * 1024 * 1024) {
         return {
           code: "file-too-large",
-          message: "File size should not be larger then 3MB",
+          message: "Розмір файлу не повинен перевищувати 3MB",
         };
       }
 
@@ -62,10 +62,14 @@ export const UserAvatarForm = () => {
       await updateUser({ photo: blob.url });
       await refetch();
 
-      toast({ title: "Profile photo successfully updated" });
+      toast({ title: "Фото профілю успішно оновлено" });
       closeCropDialog();
     } catch (error) {
-      toast({ title: "Something went wrong. Please try again", variant: "destructive" });
+      toast({
+        title: "Упс, щось трапилось...",
+        description: "Будь ласка, спробуйте ще раз",
+        variant: "destructive",
+      });
     }
   };
 
@@ -77,9 +81,13 @@ export const UserAvatarForm = () => {
       await updateUser({ photo: null });
       await refetch();
 
-      toast({ title: "Profile photo successfully deleted" });
+      toast({ title: "Фото профілю успішно видалено" });
     } catch (error) {
-      toast({ title: "Something went wrong. Please try again", variant: "destructive" });
+      toast({
+        title: "Упс, щось трапилось...",
+        description: "Будь ласка, спробуйте ще раз",
+        variant: "destructive",
+      });
     }
 
     setLoading(false);
@@ -105,7 +113,7 @@ export const UserAvatarForm = () => {
           </Avatar>
 
           <Button type="button" size="sm" variant="outline" onClick={open} disabled={loading}>
-            Change
+            Змінити
           </Button>
 
           {user?.photo && (
@@ -116,7 +124,7 @@ export const UserAvatarForm = () => {
               variant="ghost"
               onClick={handleDeleteAvatar}
               disabled={loading}>
-              Delete
+              Видалити
             </Button>
           )}
         </div>
