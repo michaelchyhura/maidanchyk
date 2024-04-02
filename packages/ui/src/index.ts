@@ -7,6 +7,7 @@ export * from "./components/ui/button";
 export * from "./components/ui/card";
 export * from "./components/ui/carousel";
 export * from "./components/ui/checkbox";
+export * from "./components/ui/container";
 export * from "./components/ui/dialog";
 export * from "./components/ui/drawer";
 export * from "./components/ui/dropdown-menu";
