@@ -34,46 +34,141 @@ import {
 import { COURT_EVENTS } from "../../shared/constants/options";
 import { compress } from "../../shared/lib/files";
 import { trpc } from "../../server/trpc";
+import { Court, CourtAsset, CourtCity, CourtLocation } from "@maidanchyk/prisma";
+import axios from "axios";
 
-export const CourtForm = () => {
+type Props = {
+  court?: Omit<Court, "createdAt" | "updatedAt"> & {
+    photos: Omit<CourtAsset, "createdAt" | "updatedAt">[];
+    location: Omit<CourtLocation, "createdAt" | "updatedAt">;
+    city: Omit<CourtCity, "createdAt" | "updatedAt">;
+  };
+};
+
+export const CourtForm = ({ court }: Props) => {
   const router = useRouter();
   const { toast } = useToast();
   const { user } = useAuth();
 
   const { mutateAsync: createCourt } = trpc.courts.create.useMutation();
+  const { mutateAsync: updateCourt } = trpc.courts.update.useMutation();
 
   const form = useForm<z.infer<typeof courtSchema>>({
     resolver: zodResolver(courtSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-      price: "",
-      events: [],
-      photos: [],
-      city: IVANO_FRANKIVSK_CITY,
-      location: IVANO_FRANKIVSK_COORDINATES,
-      contactPerson: user?.name || "",
-      contactEmail: user?.email || "",
-      contactPhone: user?.phone || "",
-    },
+    defaultValues: court
+      ? {
+          name: court.name,
+          description: court.description,
+          price: court.price.toString(),
+          events: court.events,
+          photos: court.photos,
+          city: {
+            description: court.city.description,
+            place_id: court.city.placeId,
+            structured_formatting: {
+              main_text: court.city.mainText,
+              secondary_text: court.city.secondaryText,
+            },
+            types: court.city.types,
+          },
+          location: court.location,
+          contactPerson: court.contactPerson,
+          contactEmail: court.contactEmail,
+          contactPhone: court.contactPhone,
+        }
+      : {
+          name: "",
+          description: "",
+          price: "",
+          events: [],
+          photos: [],
+          city: IVANO_FRANKIVSK_CITY,
+          location: IVANO_FRANKIVSK_COORDINATES,
+          contactPerson: user?.name || "",
+          contactEmail: user?.email || "",
+          contactPhone: user?.phone || "",
+        },
   });
 
   const handleSubmit = async (values: z.infer<typeof courtSchema>) => {
-    try {
-      const photos = await Promise.all(
-        values.photos.map(async (file) => {
-          return upload(file.name, await compress(file), {
-            access: "public",
-            handleUploadUrl: "/api/blob/upload",
-          });
-        }),
-      );
-      const court = await createCourt({ ...values, photos });
+    if (court) {
+      try {
+        const uploadedPhotos = values.photos.filter((photo) =>
+          photo instanceof File ? false : true,
+        );
+        const removedPhotos = court.photos.filter((photo) =>
+          uploadedPhotos.every((p) => p.id !== photo.id),
+        );
 
-      toast({ title: "Court successfully created" });
-      router.push(`/courts/${court.id}`);
-    } catch (error) {
-      toast({ title: "Something went wrong", description: "Please try again" });
+        const photos = await Promise.all(
+          values.photos.map(async (photo) => {
+            if (photo instanceof File) {
+              const blob = await upload(photo.name, await compress(photo), {
+                access: "public",
+                handleUploadUrl: "/api/blob/upload",
+              });
+
+              return {
+                ...blob,
+                size: photo.size as number,
+              };
+            }
+
+            return photo;
+          }),
+        );
+
+        const [geocode] = await getGeocode({ location: values.location });
+        const location = {
+          placeId: geocode.place_id,
+          formattedAddress: geocode.formatted_address,
+          lat: geocode.geometry.location.lat(),
+          lng: geocode.geometry.location.lng(),
+        };
+
+        await updateCourt({ id: court.id, values: { ...values, photos, location } });
+
+        await Promise.all(
+          removedPhotos.map((photo) => axios.delete(`/api/blob/delete?url=${photo.url}`)),
+        );
+
+        toast({ title: "Майданчик успішно оновлено" });
+        router.push(`/courts/${court.id}`);
+      } catch {
+        toast({ title: "Упс, щось трапилось...", description: "Будь ласка, спробуйте ще раз" });
+      }
+    } else {
+      try {
+        const photos = await Promise.all(
+          values.photos.map(async (file) => {
+            const blob = await upload(file.name, await compress(file), {
+              access: "public",
+              handleUploadUrl: "/api/blob/upload",
+            });
+
+            return {
+              ...blob,
+              name: file.name as string,
+              size: file.size as number,
+            };
+          }),
+        );
+
+        const [geocode] = await getGeocode({ location: values.location });
+        const location = {
+          placeId: geocode.place_id,
+          formattedAddress: geocode.formatted_address,
+          lat: geocode.geometry.location.lat(),
+          lng: geocode.geometry.location.lng(),
+        };
+
+        const court = await createCourt({ ...values, photos, location });
+
+        toast({ title: "Майданчик успішно опубліковано" });
+        router.push(`/courts/${court.id}`);
+      } catch {
+        toast({ title: "Упс, щось трапилось...", description: "Будь ласка, спробуйте ще раз" });
+      }
     }
   };
 
@@ -82,7 +177,7 @@ export const CourtForm = () => {
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
         <Card>
           <CardHeader>
-            <CardTitle>General Information</CardTitle>
+            <CardTitle>Загальна інформація</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <FormField
@@ -90,14 +185,11 @@ export const CourtForm = () => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Назва</FormLabel>
                   <FormControl>
-                    <Input
-                      className="max-w-md"
-                      placeholder="NorthSport Athletic Facility"
-                      {...field}
-                    />
+                    <Input className="max-w-md" {...field} />
                   </FormControl>
+                  <FormDescription>Наприклад: Спортивний комплекс NorthSport</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -107,16 +199,15 @@ export const CourtForm = () => {
               control={form.control}
               name="description"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
+                <FormItem className="max-w-2xl">
+                  <FormLabel>Детальний опис</FormLabel>
                   <FormControl>
-                    <Textarea
-                      className="max-w-2xl resize-none"
-                      placeholder="There are four courts available, that can be converted into 2 pro-sized courts..."
-                      rows={6}
-                      {...field}
-                    />
+                    <Textarea className="resize-none" rows={6} {...field} />
                   </FormControl>
+                  <FormDescription>
+                    Опис майданчика, розміри та характеристики, особливості та унікальні переваги,
+                    інформація про доступність послуг, інші важливі деталі
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -127,11 +218,11 @@ export const CourtForm = () => {
               name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Price</FormLabel>
+                  <FormLabel>Ціна</FormLabel>
                   <FormControl>
                     <Input className="max-w-[256px]" type="number" {...field} />
                   </FormControl>
-                  <FormDescription>₴, per hour</FormDescription>
+                  <FormDescription>₴ за годину</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -141,7 +232,7 @@ export const CourtForm = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Additional Information</CardTitle>
+            <CardTitle>Додаткова інформація</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <FormField
@@ -149,7 +240,7 @@ export const CourtForm = () => {
               name="events"
               render={() => (
                 <FormItem>
-                  <FormLabel className="mb-4 text-base">Supported Events</FormLabel>
+                  <FormLabel className="mb-4 text-base">Види активностей</FormLabel>
                   {COURT_EVENTS.map((event) => (
                     <FormField
                       key={event.value}
@@ -189,7 +280,7 @@ export const CourtForm = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Photos</CardTitle>
+            <CardTitle>Фото</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <FormField
@@ -197,7 +288,10 @@ export const CourtForm = () => {
               name="photos"
               render={({ field }) => (
                 <FormItem>
-                  <FormDescription>Upload up to 5 photos showcasing the gym</FormDescription>
+                  <FormDescription>
+                    Завантажте до 5 фотографій, що демонструють спортивний зал. Перше фото буде на
+                    обкладинці оголошення
+                  </FormDescription>
                   <FormControl>
                     <Dropzone
                       value={field.value}
@@ -221,7 +315,7 @@ export const CourtForm = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Location</CardTitle>
+            <CardTitle>Місцезнаходження</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <FormField
@@ -232,7 +326,7 @@ export const CourtForm = () => {
                   <FormControl>
                     <GooglePlacesAutocomplete
                       className="max-w-2xl"
-                      label="Select City"
+                      label="Місто"
                       value={field.value}
                       onChange={async (suggestion) => {
                         field.onChange(suggestion);
@@ -242,6 +336,7 @@ export const CourtForm = () => {
 
                         form.setValue("location", { lat, lng });
                       }}
+                      disabled
                     />
                   </FormControl>
                   <FormMessage />
@@ -273,7 +368,7 @@ export const CourtForm = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Contact Information</CardTitle>
+            <CardTitle>Ваші контактні дані</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <FormField
@@ -281,7 +376,7 @@ export const CourtForm = () => {
               name="contactPerson"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Contact Person</FormLabel>
+                  <FormLabel>Контактна особа</FormLabel>
                   <FormControl>
                     <Input className="max-w-md" placeholder="Jon Doe" {...field} />
                   </FormControl>
@@ -297,12 +392,7 @@ export const CourtForm = () => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input
-                      className="max-w-md"
-                      placeholder="jon.doe@gmail.com"
-                      disabled
-                      {...field}
-                    />
+                    <Input className="max-w-md" placeholder="jon.doe@gmail.com" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -314,7 +404,7 @@ export const CourtForm = () => {
               name="contactPhone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
+                  <FormLabel>Телефон</FormLabel>
                   <FormControl>
                     <Input className="max-w-md" placeholder="+380123456789" {...field} />
                   </FormControl>
@@ -326,7 +416,7 @@ export const CourtForm = () => {
         </Card>
 
         <Button type="submit" disabled={form.formState.isSubmitting}>
-          Publish
+          {court ? "Зберігти зміни" : "Опубліковати майданчик"}
         </Button>
       </form>
     </Form>
