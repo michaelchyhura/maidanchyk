@@ -29,7 +29,7 @@ export function authMiddleware(middleware: CustomMiddleware) {
       return NextResponse.redirect(new URL("/auth/verify", req.url));
     }
 
-    if (isVerifyRoute && session.emailVerified) {
+    if (isVerifyRoute && (!session.isAuthenticated || session.emailVerified)) {
       return NextResponse.redirect(new URL("/", req.url));
     }
 

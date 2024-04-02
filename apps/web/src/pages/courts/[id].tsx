@@ -75,30 +75,28 @@ const PhotosSection = ({
   };
 }) => {
   return (
-    <div className="rounded-md border p-4 shadow-sm">
-      <PhotoProvider>
-        <Carousel className="w-full max-w-full">
-          <CarouselContent>
-            {court.photos.map((photo) => (
-              <CarouselItem key={photo.id}>
-                <AspectRatio ratio={16 / 10}>
-                  <PhotoView src={photo.url}>
-                    <Image
-                      className="rounded-md object-cover"
-                      src={photo.url}
-                      alt={photo.pathname}
-                      fill
-                    />
-                  </PhotoView>
-                </AspectRatio>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
-      </PhotoProvider>
-    </div>
+    <PhotoProvider>
+      <Carousel className="w-full max-w-full overflow-hidden rounded-md">
+        <CarouselContent>
+          {court.photos.map((photo) => (
+            <CarouselItem key={photo.id}>
+              <AspectRatio ratio={16 / 10}>
+                <PhotoView src={photo.url}>
+                  <Image
+                    className="rounded-md object-cover"
+                    src={photo.url}
+                    alt={photo.pathname}
+                    fill
+                  />
+                </PhotoView>
+              </AspectRatio>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
+    </PhotoProvider>
   );
 };
 

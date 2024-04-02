@@ -1,35 +1,34 @@
 import { ReactNode } from "react";
-import { cn } from "@maidanchyk/ui";
+import { Container, cn } from "@maidanchyk/ui";
 import { Header } from "../header";
+import { Footer } from "../footer";
 
 type Props = {
   title?: string;
+  badge?: ReactNode;
   spacing?: boolean;
   children: ReactNode;
 };
 
-export const StackedLayout = ({ title, spacing = false, children }: Props) => {
+export const StackedLayout = ({ title, badge, spacing = false, children }: Props) => {
   return (
     <div className="min-h-full">
       <Header />
 
-      <div className="py-10">
-        {title && (
-          <header>
-            <div className="pm-4 mx-auto mb-4 max-w-7xl px-4 sm:mb-6 sm:px-6 lg:mb-8 lg:px-8">
-              <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900 ">
-                {title}
-              </h1>
-            </div>
-          </header>
-        )}
+      {title && (
+        <Container className="mb-4 sm:mb-6 lg:mb-8">
+          <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900 ">
+            {title}
+            {badge && <span className="ml-2 text-zinc-500 text-2xl">{badge}</span>}
+          </h1>
+        </Container>
+      )}
 
-        <main>
-          <div className={cn("mx-auto max-w-7xl px-4 sm:px-6 lg:px-8", { "space-y-4": spacing })}>
-            {children}
-          </div>
-        </main>
-      </div>
+      <main>
+        <Container spacing={spacing}>{children}</Container>
+      </main>
+
+      <Footer />
     </div>
   );
 };

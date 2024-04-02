@@ -1,14 +1,36 @@
-import { Disclosure } from "@headlessui/react";
-import { MenuIcon, X } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage, Button, buttonVariants, cn } from "@maidanchyk/ui";
-import { UserMenu } from "../../features/user-menu";
+import { Fragment } from "react";
+import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage, Button, Container, cn } from "@maidanchyk/ui";
 import { useRouter } from "next/router";
 import { useAuth } from "../../shared/providers/auth";
-import { getInitials } from "../../shared/lib/strings";
 import { UserRole } from "@maidanchyk/prisma";
-import Link from "next/link";
+import { UserMenu } from "../../features/user-menu";
+import { Disclosure, Transition } from "@headlessui/react";
+import { getInitials } from "../../shared/lib/strings";
+import Image from "next/image";
+import { NavLink } from "../../shared/ui";
 
-export const Header = () => {
+function MobileNavIcon({ open }: { open: boolean }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className="h-3.5 w-3.5 overflow-visible stroke-slate-700"
+      fill="none"
+      strokeWidth={2}
+      strokeLinecap="round">
+      <path
+        d="M0 1H14M0 7H14M0 13H14"
+        className={cn("origin-center transition", open && "scale-90 opacity-0")}
+      />
+      <path
+        d="M2 2L12 12M12 2L2 12"
+        className={cn("origin-center transition", !open && "scale-90 opacity-0")}
+      />
+    </svg>
+  );
+}
+
+export function Header() {
   const router = useRouter();
   const { user } = useAuth();
 
@@ -16,11 +38,11 @@ export const Header = () => {
     if (user?.role === UserRole.COURT_OWNER) {
       return [
         {
-          name: "Courts",
+          name: "Майданчики",
           href: "/courts",
         },
         {
-          name: "My Courts",
+          name: "Мої Оголошення",
           href: "/courts/mine",
         },
       ];
@@ -28,7 +50,7 @@ export const Header = () => {
 
     return [
       {
-        name: "Courts",
+        name: "Майданчики",
         href: "/courts",
       },
     ];
@@ -38,97 +60,84 @@ export const Header = () => {
     user
       ? [
           {
-            name: "Settings",
+            name: "Налаштування",
             href: "/settings",
           },
           {
-            name: "Sign Out",
+            name: "Вийти",
             href: "/api/auth/sign-out",
           },
         ]
       : [
           {
-            name: "Sign In",
+            name: "Увійти",
             href: "/auth/sign-in",
           },
           {
-            name: "Sign Up",
+            name: "Зареєструватись",
             href: "/auth/sign-up",
           },
         ];
 
   return (
-    <Disclosure as="nav" className="border-b border-gray-200 bg-white">
-      {({ open }) => (
-        <>
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="flex h-16 justify-between">
-              <div className="flex">
-                <Link className="flex flex-shrink-0 items-center" href="/">
-                  <img
-                    className="block h-8 w-auto lg:hidden"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=orange&shade=500"
-                    alt="Maidanchyk"
-                  />
-                  <img
-                    className="hidden h-8 w-auto lg:block"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=orange&shade=500"
-                    alt="Maidanchyk"
-                  />
-                </Link>
-                <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
-                  {navigation().map((route) => (
-                    <Link
-                      key={route.name}
-                      href={route.href}
-                      className={cn(
-                        route.href === router.pathname
-                          ? "border-orange-500 text-orange-700"
-                          : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
-                        "inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium",
-                      )}
-                      aria-current={route.href === router.pathname ? "page" : undefined}>
-                      {route.name}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
-              <div className="hidden sm:ml-6 sm:flex sm:items-center">
-                {!user && (
-                  <>
-                    <Button className="mr-4" variant="ghost" size="sm" asChild>
-                      <Link href="/auth/sign-in">Sign In</Link>
-                    </Button>
-                    <Button size="sm" asChild>
-                      <Link href="/auth/sign-up">Sign Up</Link>
-                    </Button>
-                  </>
-                )}
-                <UserMenu />
-              </div>
-
-              <div className="-mr-2 flex items-center sm:hidden">
-                <Disclosure.Button
-                  className={buttonVariants({
-                    size: "icon",
-                    variant: "outline",
-                    className: "relative",
-                  })}>
-                  <span className="absolute -inset-0.5" />
-                  <span className="sr-only">Open main menu</span>
-                  {open ? (
-                    <X className="block h-6 w-6" aria-hidden="true" />
-                  ) : (
-                    <MenuIcon className="block h-6 w-6" aria-hidden="true" />
-                  )}
-                </Disclosure.Button>
-              </div>
+    <Disclosure as="header" className="py-10">
+      <Container>
+        <nav className=" z-50 flex justify-between">
+          <div className="flex items-center md:gap-x-12">
+            <Link
+              href="/"
+              aria-label="Home"
+              className="ring-offset-background focus-visible:ring-ring rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2">
+              <Image src="/assets/logo-icon.png" alt="" height={40} width={32} />
+            </Link>
+            <div className="hidden md:flex md:gap-x-6">
+              {navigation().map((route) => (
+                <NavLink
+                  className={cn({
+                    "bg-orange-50 text-orange-600": router.pathname === route.href,
+                  })}
+                  href={route.href}>
+                  {route.name}
+                </NavLink>
+              ))}
             </div>
           </div>
+          <div className="flex items-center gap-x-5 md:gap-x-8">
+            {!user && (
+              <div className="hidden md:block">
+                <NavLink className="mr-8" href="/auth/sign-in">
+                  Увійти
+                </NavLink>
+                <Button color="blue" asChild>
+                  <Link href="/auth/sign-up">Зареєструватись</Link>
+                </Button>
+              </div>
+            )}
 
-          <Disclosure.Panel className="sm:hidden">
-            <div className="space-y-1 pb-3 pt-2">
+            <UserMenu className="hidden md:flex" />
+
+            <div className="-mr-1 md:hidden">
+              <Disclosure.Button
+                className="ui-not-focus-visible:outline-none ring-offset-background focus-visible:ring-ring relative z-10 flex h-8 w-8 items-center justify-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                aria-label="Toggle Navigation">
+                {({ open }) => <MobileNavIcon open={open} />}
+              </Disclosure.Button>
+            </div>
+          </div>
+        </nav>
+      </Container>
+
+      <Transition.Root>
+        <Transition.Child
+          as={Fragment}
+          enter="duration-150 ease-out"
+          enterFrom="opacity-0 scale-95"
+          enterTo="opacity-100 scale-100"
+          leave="duration-100 ease-in"
+          leaveFrom="opacity-100 scale-100"
+          leaveTo="opacity-0 scale-95">
+          <Disclosure.Panel className="md:hidden">
+            <div className="mt-10 space-y-1 border-t border-gray-200 pb-3 pt-2">
               {navigation().map((route) => (
                 <Disclosure.Button
                   key={route.name}
@@ -175,8 +184,8 @@ export const Header = () => {
               </div>
             </div>
           </Disclosure.Panel>
-        </>
-      )}
+        </Transition.Child>
+      </Transition.Root>
     </Disclosure>
   );
-};
+}

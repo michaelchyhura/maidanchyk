@@ -26,7 +26,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "../../shared/ui/pagination";
+} from "../../shared/ui";
 import { CourtsFilters } from "../../features/courts-filters";
 import { CourtsGridList } from "../../features/courts-grid-list";
 import { presence } from "../../shared/lib/objects";

@@ -35,7 +35,7 @@ import {
   PaginationLink,
   PaginationEllipsis,
   PaginationNext,
-} from "../../shared/ui/pagination";
+} from "../../shared/ui";
 
 export default function MyCourts() {
   const { user } = useAuth();
