@@ -195,21 +195,26 @@ export default function MyCourts() {
                       </PaginationItem>
                     ))}
 
-                  {[1, 2, courts.totalPages].includes(page) ? (
-                    courts.totalPages > 4 && (
-                      <PaginationItem>
-                        <PaginationEllipsis />
-                      </PaginationItem>
-                    )
-                  ) : (
+                  {[1, 2, courts.totalPages].includes(page) && courts.totalPages > 3 && (
                     <PaginationItem>
-                      <PaginationLink isActive href={{ pathname: "/courts/mine", query: { page } }}>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  )}
+
+                  {![1, 2].includes(page) && page !== courts.totalPages && (
+                    <PaginationItem>
+                      <PaginationLink
+                        isActive
+                        href={{
+                          pathname: "/courts/mine",
+                          query: { page: courts.totalPages },
+                        }}>
                         {page}
                       </PaginationLink>
                     </PaginationItem>
                   )}
 
-                  {courts.totalPages > 4 && (
+                  {courts.totalPages > 2 && (
                     <PaginationItem>
                       <PaginationLink
                         isActive={page === courts.totalPages}

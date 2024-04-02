@@ -139,13 +139,13 @@ export default function Courts() {
                       </PaginationItem>
                     ))}
 
-                  {[1, 2, data.totalPages].includes(page) ? (
-                    data.totalPages > 4 && (
-                      <PaginationItem>
-                        <PaginationEllipsis />
-                      </PaginationItem>
-                    )
-                  ) : (
+                  {[1, 2, data.totalPages].includes(page) && data.totalPages > 3 && (
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  )}
+
+                  {![1, 2].includes(page) && page !== data.totalPages && (
                     <PaginationItem>
                       <PaginationLink
                         isActive
@@ -158,7 +158,7 @@ export default function Courts() {
                     </PaginationItem>
                   )}
 
-                  {data.totalPages > 4 && (
+                  {data.totalPages > 2 && (
                     <PaginationItem>
                       <PaginationLink
                         isActive={page === data.totalPages}

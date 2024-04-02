@@ -35,7 +35,7 @@ export const UserAvatarForm = () => {
     onDropRejected: (rejections) => {
       setErrors(uniq(rejections.flatMap((r) => r.errors.flatMap((e) => e.message))));
     },
-    maxFiles: 1,
+    multiple: false,
     validator: (file) => {
       if (file.size > 3 * 1024 * 1024) {
         return {
