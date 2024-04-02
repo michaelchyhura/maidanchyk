@@ -69,7 +69,7 @@ export const NewsletterForm = ({ className }: Props) => {
             </FormItem>
           )}
         />
-        <Button className="w-full sm:w-auto" type="submit" disabled={form.formState.isSubmitting}>
+        <Button className="w-full" type="submit" disabled={form.formState.isSubmitting}>
           Сповістити мене
         </Button>
       </form>
