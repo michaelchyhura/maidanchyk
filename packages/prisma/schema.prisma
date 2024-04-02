@@ -1,0 +1,108 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "darwin-arm64"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+model User {
+  id            String   @id @unique @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now()) @updatedAt
+  name          String?
+  email         String   @unique
+  photo         String?
+  phone         String?
+  telegram      String?
+  workosId      String   @unique
+  emailVerified Boolean  @default(false)
+  role          UserRole
+  courts        Court[]
+}
+
+enum UserRole {
+  COURT_OWNER
+  PLAYER
+}
+
+model Court {
+  id            String        @id @unique @default(cuid())
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @default(now()) @updatedAt
+  name          String
+  photos        CourtAsset[]
+  description   String        @db.VarChar(255)
+  price         Float
+  events        CourtEvent[]
+  city          CourtCity     @relation(fields: [cityId], references: [id])
+  cityId        String
+  location      CourtLocation @relation(fields: [locationId], references: [id])
+  locationId    String
+  contactPerson String
+  contactEmail  String
+  contactPhone  String
+  userId        String
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CourtAsset {
+  id          String   @id @unique @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+  pathname    String
+  contentType String
+  url         String
+  size        Float
+  court       Court    @relation(fields: [courtId], references: [id], onDelete: Cascade)
+  courtId     String
+}
+
+model CourtCity {
+  id            String   @id @unique @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now()) @updatedAt
+  placeId       String
+  description   String
+  mainText      String
+  secondaryText String
+  types         String[]
+  courts        Court[]
+}
+
+model CourtLocation {
+  id               String   @id @unique @default(cuid())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now()) @updatedAt
+  placeId          String
+  formattedAddress String
+  lat              Float
+  lng              Float
+  courts           Court[]
+}
+
+enum CourtEvent {
+  BASKETBALL
+  VOLLEYBALL
+  TENNIS
+  BADMINTON
+  MINI_FOOTBALL
+  HANDBALL
+  MULTI_SPORT
+}
+
+enum CourtStatus {
+  IN_REVIEW
+  APPROVED
+  REJECTED
+}
+
+model NewsletterSubscriber {
+  id        String   @id @unique @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  email     String   @unique
+}
