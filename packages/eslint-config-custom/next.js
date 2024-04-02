@@ -54,6 +54,7 @@ module.exports = {
     "react/jsx-no-leaked-render": "off",
     "no-implicit-coercion": "off",
     "@typescript-eslint/restrict-template-expressions": "off",
-    "no-undef": "off"
+    "no-undef": "off",
+    "turbo/no-undeclared-env-vars": "off"
   },
 };

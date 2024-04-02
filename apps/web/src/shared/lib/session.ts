@@ -20,7 +20,6 @@ export const sessionOptions: SessionOptions = {
   cookieOptions: {
     // secure only works in `https` environments
     // if your localhost is not on `https`, then use: `secure: process.env.NODE_ENV === "production"`
-    // eslint-disable-next-line turbo/no-undeclared-env-vars
     secure: process.env.NODE_ENV === "production",
     httpOnly: true,
   },
