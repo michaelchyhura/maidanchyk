@@ -1,4 +1,4 @@
-import { CourtEvent } from "@maidanchyk/prisma";
+import type { CourtEvent } from "@maidanchyk/prisma";
 import {
   Button,
   Label,
@@ -19,10 +19,10 @@ const ORDER_BY_OPTIONS = [
   { label: "Найдорожчі", value: "expensive" },
 ];
 
-export const CourtsFilters = () => {
+export function CourtsFilters() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const { replace } = useRouter();
+  const router = useRouter();
 
   const sort = searchParams.get("sort")?.toString() || "recent";
   const events = searchParams.get("events")?.toString().split(",");
@@ -38,7 +38,7 @@ export const CourtsFilters = () => {
 
     params.set("page", "1");
 
-    replace([pathname, params.toString()].filter(Boolean).join("?"));
+    router.replace([pathname, params.toString()].filter(Boolean).join("?"));
   };
 
   const handleEventsChange = (event: CourtEvent) => {
@@ -60,7 +60,7 @@ export const CourtsFilters = () => {
 
     params.set("page", "1");
 
-    replace([pathname, params.toString()].filter(Boolean).join("?"));
+    router.replace([pathname, params.toString()].filter(Boolean).join("?"));
   };
 
   return (
@@ -82,10 +82,11 @@ export const CourtsFilters = () => {
       </div>
 
       <GooglePlacesAutocomplete
-        label="Місто"
-        value={IVANO_FRANKIVSK_CITY}
-        onChange={() => {}}
         disabled
+        label="Місто"
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        onChange={() => {}}
+        value={IVANO_FRANKIVSK_CITY}
       />
 
       <div className="space-y-2">
@@ -94,9 +95,9 @@ export const CourtsFilters = () => {
           {COURT_EVENTS.map((event) => (
             <li key={event.value}>
               <Button
+                onClick={() => handleEventsChange(event.value)}
                 size="sm"
-                variant={events?.includes(event.value) ? "default" : "secondary"}
-                onClick={() => handleEventsChange(event.value)}>
+                variant={events?.includes(event.value) ? "default" : "secondary"}>
                 {event.label}
               </Button>
             </li>
@@ -105,4 +106,4 @@ export const CourtsFilters = () => {
       </div>
     </>
   );
-};
+}

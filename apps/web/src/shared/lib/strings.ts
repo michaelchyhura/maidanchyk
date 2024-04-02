@@ -1,4 +1,4 @@
-import { CourtEvent } from "@maidanchyk/prisma";
+import type { CourtEvent } from "@maidanchyk/prisma";
 import { COURT_EVENTS } from "../constants/options";
 
 export const getInitials = (name: string) => {

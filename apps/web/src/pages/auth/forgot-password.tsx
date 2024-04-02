@@ -4,9 +4,9 @@ import { withUser } from "../../shared/lib/ssr";
 
 export default function ForgotPassword() {
   return (
-    <StackedLayout title="Забули пароль?" spacing>
+    <StackedLayout spacing title="Забули пароль?">
       <p className="text-sm text-zinc-500">
-        Введіть електронну пошту, пов'язану з вашим обліковим записом. Ми надішлемо вам посилання
+        Введіть електронну пошту, пов&apos;язану з вашим обліковим записом. Ми надішлемо вам посилання
         для відновлення пароля.
       </p>
       <ForgotPasswordForm />

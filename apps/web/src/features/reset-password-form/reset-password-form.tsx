@@ -9,14 +9,14 @@ import {
   Input,
   useToast,
 } from "@maidanchyk/ui";
-import { z } from "zod";
+import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
-import { forgotPasswordSchema } from "./lib/validation";
 import { trpc } from "../../server/trpc";
+import { forgotPasswordSchema } from "./lib/validation";
 
-export const ResetPasswordForm = () => {
+export function ResetPasswordForm() {
   const router = useRouter();
   const { toast } = useToast();
 
@@ -46,7 +46,7 @@ export const ResetPasswordForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+      <form className="space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
         <FormField
           control={form.control}
           name="password"
@@ -61,10 +61,10 @@ export const ResetPasswordForm = () => {
           )}
         />
 
-        <Button type="submit" disabled={form.formState.isSubmitting}>
+        <Button disabled={form.formState.isSubmitting} type="submit">
           Продовжити
         </Button>
       </form>
     </Form>
   );
-};
+}

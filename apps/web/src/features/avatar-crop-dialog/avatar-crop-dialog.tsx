@@ -13,15 +13,15 @@ import React, { useEffect, useRef, useState } from "react";
 import AvatarEditor from "react-avatar-editor";
 import { compress } from "../../shared/lib/files";
 
-type Props = {
+interface Props {
   open: boolean;
   filename: string;
   avatar: File;
   onSubmit: (file: File | Blob, url: string) => Promise<void>;
   onClose: () => void;
-};
+}
 
-export const AvatarCropDialog = ({ open, filename, avatar, onSubmit, onClose }: Props) => {
+export function AvatarCropDialog({ open, filename, avatar, onSubmit, onClose }: Props) {
   const editor = useRef<AvatarEditor | null>(null);
   const [zoom, setZoom] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -47,7 +47,7 @@ export const AvatarCropDialog = ({ open, filename, avatar, onSubmit, onClose }: 
   };
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog onOpenChange={onClose} open={open}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Налаштуйте ваше фото</DialogTitle>
@@ -59,26 +59,26 @@ export const AvatarCropDialog = ({ open, filename, avatar, onSubmit, onClose }: 
         <div className="flex items-center justify-center space-x-2">
           <div className="space-y-2 text-gray-500">
             <AvatarEditor
-              ref={editor}
-              className="mx-auto"
-              image={avatar}
-              width={250}
-              height={250}
-              borderRadius={125}
               border={50}
+              borderRadius={125}
+              className="mx-auto"
               color={[255, 255, 255, 0.6]} // RGBA
-              scale={1 + zoom / 100}
+              height={250}
+              image={avatar}
+              ref={editor}
               rotate={0}
+              scale={1 + zoom / 100}
+              width={250}
             />
 
             <div className="flex items-center gap-x-4">
               <ZoomOut />
               <Slider
-                value={[zoom]}
+                max={100}
+                min={1}
                 onValueChange={(value) => setZoom(value[0])}
                 step={1}
-                min={1}
-                max={100}
+                value={[zoom]}
               />
               <ZoomIn />
             </div>
@@ -86,14 +86,14 @@ export const AvatarCropDialog = ({ open, filename, avatar, onSubmit, onClose }: 
         </div>
 
         <DialogFooter className="gap-y-2 sm:justify-start">
-          <Button type="button" variant="secondary" onClick={onClose} disabled={loading}>
+          <Button disabled={loading} onClick={onClose} type="button" variant="secondary">
             Закрити
           </Button>
-          <Button type="button" onClick={handleSubmit} disabled={loading}>
+          <Button disabled={loading} onClick={handleSubmit} type="button">
             Зберегти зміни
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
-};
+}

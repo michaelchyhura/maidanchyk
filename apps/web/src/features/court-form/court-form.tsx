@@ -17,13 +17,14 @@ import {
   Textarea,
   useToast,
 } from "@maidanchyk/ui";
-import { z } from "zod";
+import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { getGeocode, getLatLng } from "use-places-autocomplete";
 import { upload } from "@vercel/blob/client";
 import { useRouter } from "next/router";
-import { courtSchema } from "./lib/validation";
+import type { Court, CourtAsset, CourtCity, CourtLocation } from "@maidanchyk/prisma";
+import axios from "axios";
 import { useAuth } from "../../shared/providers/auth";
 import { Dropzone } from "../dropzone";
 import { GooglePlacesAutocomplete } from "../google-places-autocomplete";
@@ -34,18 +35,17 @@ import {
 import { COURT_EVENTS } from "../../shared/constants/options";
 import { compress } from "../../shared/lib/files";
 import { trpc } from "../../server/trpc";
-import { Court, CourtAsset, CourtCity, CourtLocation } from "@maidanchyk/prisma";
-import axios from "axios";
+import { courtSchema } from "./lib/validation";
 
-type Props = {
+interface Props {
   court?: Omit<Court, "createdAt" | "updatedAt"> & {
     photos: Omit<CourtAsset, "createdAt" | "updatedAt">[];
     location: Omit<CourtLocation, "createdAt" | "updatedAt">;
     city: Omit<CourtCity, "createdAt" | "updatedAt">;
   };
-};
+}
 
-export const CourtForm = ({ court }: Props) => {
+export function CourtForm({ court }: Props) {
   const router = useRouter();
   const { toast } = useToast();
   const { user } = useAuth();
@@ -93,11 +93,9 @@ export const CourtForm = ({ court }: Props) => {
   const handleSubmit = async (values: z.infer<typeof courtSchema>) => {
     if (court) {
       try {
-        const uploadedPhotos = values.photos.filter((photo) =>
-          photo instanceof File ? false : true,
-        );
+        const uploadedPhotos = values.photos.filter((photo) => !(photo instanceof File));
         const removedPhotos = court.photos.filter((photo) =>
-          uploadedPhotos.every((p) => p.id !== photo.id),
+          uploadedPhotos.every((p: { id: string }) => p.id !== photo.id),
         );
 
         const photos = await Promise.all(
@@ -110,7 +108,7 @@ export const CourtForm = ({ court }: Props) => {
 
               return {
                 ...blob,
-                size: photo.size as number,
+                size: photo.size,
               };
             }
 
@@ -140,7 +138,7 @@ export const CourtForm = ({ court }: Props) => {
     } else {
       try {
         const photos = await Promise.all(
-          values.photos.map(async (file) => {
+          values.photos.map(async (file: File) => {
             const blob = await upload(file.name, await compress(file), {
               access: "public",
               handleUploadUrl: "/api/blob/upload",
@@ -148,8 +146,8 @@ export const CourtForm = ({ court }: Props) => {
 
             return {
               ...blob,
-              name: file.name as string,
-              size: file.size as number,
+              name: file.name,
+              size: file.size,
             };
           }),
         );
@@ -174,7 +172,7 @@ export const CourtForm = ({ court }: Props) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+      <form className="space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
         <Card>
           <CardHeader>
             <CardTitle>Загальна інформація</CardTitle>
@@ -243,14 +241,14 @@ export const CourtForm = ({ court }: Props) => {
                   <FormLabel className="mb-4 text-base">Види активностей</FormLabel>
                   {COURT_EVENTS.map((event) => (
                     <FormField
-                      key={event.value}
                       control={form.control}
+                      key={event.value}
                       name="events"
                       render={({ field }) => {
                         return (
                           <FormItem
-                            key={event.value}
-                            className="flex flex-row items-start space-x-3 space-y-0">
+                            className="flex flex-row items-start space-x-3 space-y-0"
+                            key={event.value}>
                             <FormControl>
                               <Checkbox
                                 checked={field.value.includes(event.value)}
@@ -294,7 +292,8 @@ export const CourtForm = ({ court }: Props) => {
                   </FormDescription>
                   <FormControl>
                     <Dropzone
-                      value={field.value}
+                      disabled={field.value.length === 5}
+                      maxFiles={5 - field.value.length}
                       onChange={(files) => {
                         field.onChange(files);
                         form.clearErrors("photos");
@@ -302,8 +301,7 @@ export const CourtForm = ({ court }: Props) => {
                       onError={(errors) => {
                         form.setError("photos", { message: errors[0] });
                       }}
-                      maxFiles={5 - field.value.length}
-                      disabled={field.value.length === 5}
+                      value={field.value}
                     />
                   </FormControl>
                   <FormMessage />
@@ -326,8 +324,8 @@ export const CourtForm = ({ court }: Props) => {
                   <FormControl>
                     <GooglePlacesAutocomplete
                       className="max-w-2xl"
+                      disabled
                       label="Місто"
-                      value={field.value}
                       onChange={async (suggestion) => {
                         field.onChange(suggestion);
 
@@ -336,7 +334,7 @@ export const CourtForm = ({ court }: Props) => {
 
                         form.setValue("location", { lat, lng });
                       }}
-                      disabled
+                      value={field.value}
                     />
                   </FormControl>
                   <FormMessage />
@@ -350,14 +348,14 @@ export const CourtForm = ({ court }: Props) => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    {field.value && (
+                    {field.value ? (
                       <GoogleMap
-                        mode="pick-location"
                         defaultCenter={field.value}
-                        onCenterChange={field.onChange}
                         height={500}
+                        mode="pick-location"
+                        onCenterChange={field.onChange}
                       />
-                    )}
+                    ) : null}
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -415,10 +413,10 @@ export const CourtForm = ({ court }: Props) => {
           </CardContent>
         </Card>
 
-        <Button type="submit" disabled={form.formState.isSubmitting}>
+        <Button disabled={form.formState.isSubmitting} type="submit">
           {court ? "Зберігти зміни" : "Опубліковати майданчик"}
         </Button>
       </form>
     </Form>
   );
-};
+}

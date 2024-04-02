@@ -18,17 +18,17 @@ import {
   GoogleMapMarker,
   Skeleton,
 } from "@maidanchyk/ui";
-import { StackedLayout } from "../../widgets/layout";
 import { ArrowLeft, MapPin } from "lucide-react";
 import { useRouter } from "next/router";
-import { trpc } from "../../server/trpc";
 import dayjs from "dayjs";
+import Image from "next/image";
+import type { Court, CourtAsset, CourtLocation } from "@maidanchyk/prisma";
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import { trpc } from "../../server/trpc";
 import { withUser } from "../../shared/lib/ssr";
 import { eventTypeToLabel, getInitials } from "../../shared/lib/strings";
 import { useModal } from "../../shared/hooks/use-modal";
-import Image from "next/image";
-import { Court, CourtAsset, CourtLocation } from "@maidanchyk/prisma";
-import { PhotoProvider, PhotoView } from "react-photo-view";
+import { StackedLayout } from "../../widgets/layout";
 
 export default function ViewCourt() {
   const router = useRouter();
@@ -38,7 +38,7 @@ export default function ViewCourt() {
   return (
     <StackedLayout spacing>
       <div>
-        <Button variant="ghost" onClick={router.back}>
+        <Button onClick={router.back} variant="ghost">
           <ArrowLeft className="mr-2 h-4 w-4" /> Назад
         </Button>
       </div>
@@ -67,13 +67,13 @@ export default function ViewCourt() {
 
 export const getServerSideProps = withUser();
 
-const PhotosSection = ({
+function PhotosSection({
   court,
 }: {
   court: Omit<Court, "createdAt" | "updatedAt"> & {
     photos: Omit<CourtAsset, "createdAt" | "updatedAt">[];
   };
-}) => {
+}) {
   return (
     <PhotoProvider>
       <Carousel className="w-full max-w-full overflow-hidden rounded-md">
@@ -83,10 +83,10 @@ const PhotosSection = ({
               <AspectRatio ratio={16 / 10}>
                 <PhotoView src={photo.url}>
                   <Image
-                    className="rounded-md object-cover"
-                    src={photo.url}
                     alt={photo.pathname}
+                    className="rounded-md object-cover"
                     fill
+                    src={photo.url}
                   />
                 </PhotoView>
               </AspectRatio>
@@ -98,15 +98,15 @@ const PhotosSection = ({
       </Carousel>
     </PhotoProvider>
   );
-};
+}
 
-const MainInformationSection = ({
+function MainInformationSection({
   className,
   court,
 }: {
   className?: string;
   court: Omit<Court, "createdAt" | "updatedAt"> & { createdAt: string; updatedAt: string };
-}) => {
+}) {
   const { isOpen: phoneVisible, open: showPhone } = useModal(false);
 
   return (
@@ -129,9 +129,9 @@ const MainInformationSection = ({
       </CardContent>
     </Card>
   );
-};
+}
 
-const AboutSection = ({ court }: { court: Omit<Court, "createdAt" | "updatedAt"> }) => {
+function AboutSection({ court }: { court: Omit<Court, "createdAt" | "updatedAt"> }) {
   return (
     <Card>
       <CardHeader>
@@ -150,15 +150,15 @@ const AboutSection = ({ court }: { court: Omit<Court, "createdAt" | "updatedAt">
       </CardContent>
     </Card>
   );
-};
+}
 
-const LocationSection = ({
+function LocationSection({
   court,
 }: {
   court: Omit<Court, "createdAt" | "updatedAt"> & {
     location: Omit<CourtLocation, "createdAt" | "updatedAt">;
   };
-}) => {
+}) {
   return (
     <Card>
       <CardHeader>
@@ -176,15 +176,15 @@ const LocationSection = ({
       </CardContent>
     </Card>
   );
-};
+}
 
-const ContactPersonSection = ({
+function ContactPersonSection({
   className,
   court,
 }: {
   className?: string;
   court: Omit<Court, "createdAt" | "updatedAt">;
-}) => {
+}) {
   return (
     <Card className={className}>
       <CardHeader>
@@ -205,9 +205,9 @@ const ContactPersonSection = ({
       </CardContent>
     </Card>
   );
-};
+}
 
-const Loader = () => {
+function Loader() {
   return (
     <div className="flex flex-col gap-4 lg:flex-row">
       <div className="flex flex-col gap-4 lg:w-8/12">
@@ -226,4 +226,4 @@ const Loader = () => {
       </div>
     </div>
   );
-};
+}

@@ -1,4 +1,4 @@
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import { prisma } from "@maidanchyk/prisma";
 import { getSession } from "./session";
 

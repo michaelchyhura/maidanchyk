@@ -3,7 +3,7 @@ import { cn } from "@maidanchyk/ui";
 import { CheckIcon } from "lucide-react";
 import usePlacesAutocomplete from "use-places-autocomplete";
 
-type GooglePlace = {
+interface GooglePlace {
   description: string;
   place_id: string;
   structured_formatting: {
@@ -11,24 +11,24 @@ type GooglePlace = {
     secondary_text: string;
   };
   types: string[];
-};
+}
 
-type Props = {
+interface Props {
   className?: string;
   label?: string;
   value: GooglePlace | null;
   onChange: (suggestion: google.maps.places.AutocompletePrediction) => void;
   disabled?: boolean;
-};
+}
 
 // TODO: Wrap into `forwardRef` and add support for error state
-export const GooglePlacesAutocomplete = ({
+export function GooglePlacesAutocomplete({
   className,
   label,
   value,
   onChange,
   disabled,
-}: Props) => {
+}: Props) {
   const {
     // ready,
     suggestions: { data },
@@ -51,9 +51,9 @@ export const GooglePlacesAutocomplete = ({
     <Combobox
       as="div"
       className={cn("grid gap-y-2", className)}
+      disabled={disabled}
       onChange={handleChange}
-      value={value}
-      disabled={disabled}>
+      value={value}>
       <Combobox.Label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
         {label}
       </Combobox.Label>
@@ -105,4 +105,4 @@ export const GooglePlacesAutocomplete = ({
       </div>
     </Combobox>
   );
-};
+}

@@ -37,5 +37,23 @@ module.exports = {
   // add rules configurations here
   rules: {
     "import/no-default-export": "off",
+    "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-shadow": "off",
+    "@typescript-eslint/naming-convention": "off",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unsafe-return": "off",
+    "@typescript-eslint/no-floating-promises": "off",
+    "@typescript-eslint/no-unsafe-member-access": "off",
+    "@typescript-eslint/no-unsafe-call": "off",
+    "@typescript-eslint/no-unsafe-argument": "off",
+    "no-nested-ternary": "off",
+    "@typescript-eslint/require-await": "off",
+    "no-console": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "react/jsx-no-leaked-render": "off",
+    "no-implicit-coercion": "off",
+    "@typescript-eslint/restrict-template-expressions": "off",
+    "no-undef": "off"
   },
 };

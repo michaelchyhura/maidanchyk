@@ -3,14 +3,14 @@ import { useState } from "react";
 import { User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage, Button, useToast } from "@maidanchyk/ui";
 import { upload } from "@vercel/blob/client";
+import { useDropzone } from "react-dropzone";
 import { useAuth } from "../../shared/providers/auth";
 import { AvatarCropDialog } from "../avatar-crop-dialog";
-import { useDropzone } from "react-dropzone";
 import { useModal } from "../../shared/hooks/use-modal";
 import { trpc } from "../../server/trpc";
 import { uniq } from "../../shared/lib/arrays";
 
-export const UserAvatarForm = () => {
+export function UserAvatarForm() {
   const { user, refetch } = useAuth();
   const { toast } = useToast();
 
@@ -74,10 +74,14 @@ export const UserAvatarForm = () => {
   };
 
   const handleDeleteAvatar = async () => {
+    if (!user?.photo) {
+      return;
+    }
+
     setLoading(true);
 
     try {
-      await axios.delete(`/api/blob/delete?url=${user?.photo}`);
+      await axios.delete(`/api/blob/delete?url=${user.photo}`);
       await updateUser({ photo: null });
       await refetch();
 
@@ -96,45 +100,47 @@ export const UserAvatarForm = () => {
   return (
     <>
       <AvatarCropDialog
-        open={cropDialogOpened}
-        filename={`avatars/${user?.id}`}
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         avatar={avatar!}
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        filename={`avatars/${user?.id}`}
         onClose={closeCropDialog}
         onSubmit={handleSubmit}
+        open={cropDialogOpened}
       />
 
       <div className="space-y-2">
         <div className="flex items-center space-x-4">
           <Avatar className="h-16 w-16">
-            <AvatarImage src={user?.photo || undefined} alt="" />
+            <AvatarImage alt="" src={user?.photo || undefined} />
             <AvatarFallback>
-              <User className="text-gray-400" aria-hidden="true" />
+              <User aria-hidden="true" className="text-gray-400" />
             </AvatarFallback>
           </Avatar>
 
-          <Button type="button" size="sm" variant="outline" onClick={open} disabled={loading}>
+          <Button disabled={loading} onClick={open} size="sm" type="button" variant="outline">
             Змінити
           </Button>
 
-          {user?.photo && (
+          {user?.photo ? (
             <Button
               className="text-red-500 hover:bg-red-50 hover:text-red-500"
-              type="button"
-              size="sm"
-              variant="ghost"
+              disabled={loading}
               onClick={handleDeleteAvatar}
-              disabled={loading}>
+              size="sm"
+              type="button"
+              variant="ghost">
               Видалити
             </Button>
-          )}
+          ) : null}
         </div>
 
         {errors.map((error) => (
-          <p key={error} className="text-sm font-medium text-red-500 dark:text-red-900">
+          <p className="text-sm font-medium text-red-500 dark:text-red-900" key={error}>
             {error}
           </p>
         ))}
       </div>
     </>
   );
-};
+}

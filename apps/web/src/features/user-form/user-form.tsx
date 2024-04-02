@@ -9,14 +9,14 @@ import {
   Input,
   useToast,
 } from "@maidanchyk/ui";
-import { z } from "zod";
+import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { userSchema } from "./lib/validation";
 import { useAuth } from "../../shared/providers/auth";
 import { trpc } from "../../server/trpc";
+import { userSchema } from "./lib/validation";
 
-export const UserForm = () => {
+export function UserForm() {
   const { user, refetch } = useAuth();
   const { toast } = useToast();
 
@@ -52,13 +52,13 @@ export const UserForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+      <form className="space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Ім'я та прізвище</FormLabel>
+              <FormLabel>Ім&apos;я та прізвище</FormLabel>
               <FormControl>
                 <Input placeholder="Jon Doe" {...field} />
               </FormControl>
@@ -97,10 +97,10 @@ export const UserForm = () => {
           />
         </div>
 
-        <Button type="submit" disabled={form.formState.isSubmitting}>
+        <Button disabled={form.formState.isSubmitting} type="submit">
           Зберегти зміни
         </Button>
       </form>
     </Form>
   );
-};
+}

@@ -12,14 +12,14 @@ import {
   Input,
   useToast,
 } from "@maidanchyk/ui";
-import { z } from "zod";
+import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { CheckCircle2 } from "lucide-react";
-import { forgotPasswordSchema } from "./lib/validation";
 import { trpc } from "../../server/trpc";
+import { forgotPasswordSchema } from "./lib/validation";
 
-export const ForgotPasswordForm = () => {
+export function ForgotPasswordForm() {
   const { toast } = useToast();
 
   const { mutateAsync: sendResetPasswordEmail } = trpc.auth.forgotPassword.useMutation();
@@ -54,7 +54,7 @@ export const ForgotPasswordForm = () => {
     </Alert>
   ) : (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+      <form className="space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
         <FormField
           control={form.control}
           name="email"
@@ -69,10 +69,10 @@ export const ForgotPasswordForm = () => {
           )}
         />
 
-        <Button type="submit" disabled={form.formState.isSubmitting}>
+        <Button disabled={form.formState.isSubmitting} type="submit">
           Продовжити
         </Button>
       </form>
     </Form>
   );
-};
+}

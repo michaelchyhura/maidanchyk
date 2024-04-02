@@ -10,17 +10,17 @@ import {
   cn,
   useToast,
 } from "@maidanchyk/ui";
-import { z } from "zod";
+import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { newsletterSchema } from "./lib/validation";
 import { trpc } from "../../server/trpc";
+import { newsletterSchema } from "./lib/validation";
 
-type Props = {
+interface Props {
   className?: string;
-};
+}
 
-export const NewsletterForm = ({ className }: Props) => {
+export function NewsletterForm({ className }: Props) {
   const { toast } = useToast();
 
   const { mutateAsync: subscribe } = trpc.newsletter.subscribe.useMutation();
@@ -49,8 +49,8 @@ export const NewsletterForm = ({ className }: Props) => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className={cn("mx-auto max-w-md space-y-4", className)}>
+        className={cn("mx-auto max-w-md space-y-4", className)}
+        onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="email"
@@ -59,9 +59,9 @@ export const NewsletterForm = ({ className }: Props) => {
               <FormLabel className="text-white">Email</FormLabel>
               <FormControl>
                 <Input
+                  autoComplete="email"
                   className="bg-white"
                   placeholder="jon.doe@gmail.com"
-                  autoComplete="email"
                   {...field}
                 />
               </FormControl>
@@ -69,10 +69,10 @@ export const NewsletterForm = ({ className }: Props) => {
             </FormItem>
           )}
         />
-        <Button className="w-full" type="submit" disabled={form.formState.isSubmitting}>
+        <Button className="w-full" disabled={form.formState.isSubmitting} type="submit">
           Сповістити мене
         </Button>
       </form>
     </Form>
   );
-};
+}

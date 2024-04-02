@@ -39,7 +39,7 @@ export default function Settings() {
   };
 
   return (
-    <StackedLayout title="Налаштування" spacing>
+    <StackedLayout spacing title="Налаштування">
       <Card>
         <CardHeader>
           <CardTitle>Фото</CardTitle>
@@ -69,7 +69,7 @@ export default function Settings() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button onClick={handleResetPassword} disabled={isLoading}>
+          <Button disabled={isLoading} onClick={handleResetPassword}>
             Скинути пароль
           </Button>
         </CardContent>

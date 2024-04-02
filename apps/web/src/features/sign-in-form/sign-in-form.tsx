@@ -10,15 +10,15 @@ import {
   Input,
   useToast,
 } from "@maidanchyk/ui";
-import { z } from "zod";
+import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { signInSchema } from "./lib/validation";
 import { trpc } from "../../server/trpc";
+import { signInSchema } from "./lib/validation";
 
-export const SignInForm = () => {
+export function SignInForm() {
   const router = useRouter();
   const { toast } = useToast();
 
@@ -48,7 +48,7 @@ export const SignInForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+      <form className="space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
         <FormField
           control={form.control}
           name="email"
@@ -74,8 +74,8 @@ export const SignInForm = () => {
               </FormControl>
               <FormDescription>
                 <Link
-                  href="/auth/forgot-password"
-                  className="mt-2 text-sm font-semibold leading-6 text-orange-600 hover:text-orange-500">
+                  className="mt-2 text-sm font-semibold leading-6 text-orange-600 hover:text-orange-500"
+                  href="/auth/forgot-password">
                   Забули пароль?
                 </Link>
               </FormDescription>
@@ -84,10 +84,10 @@ export const SignInForm = () => {
           )}
         />
 
-        <Button className="w-full" type="submit" disabled={form.formState.isSubmitting}>
+        <Button className="w-full" disabled={form.formState.isSubmitting} type="submit">
           Увійти
         </Button>
       </form>
     </Form>
   );
-};
+}

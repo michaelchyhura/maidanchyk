@@ -9,7 +9,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
       body,
       request,
       onBeforeGenerateToken: async (
-        pathname,
+        _pathname,
         /* clientPayload */
       ) => {
         // Generate a client token for the browser to upload the file

@@ -11,15 +11,15 @@ import {
   RadioGroupItem,
   useToast,
 } from "@maidanchyk/ui";
-import { z } from "zod";
+import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { UserRole } from "@maidanchyk/prisma";
-import { signUpSchema } from "./lib/validation";
 import { trpc } from "../../server/trpc";
+import { signUpSchema } from "./lib/validation";
 
-export const SignUpForm = () => {
+export function SignUpForm() {
   const router = useRouter();
   const { toast } = useToast();
 
@@ -49,7 +49,7 @@ export const SignUpForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+      <form className="space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
         <FormField
           control={form.control}
           name="email"
@@ -84,7 +84,7 @@ export const SignUpForm = () => {
           render={({ field }) => (
             <FormItem className="space-y-2">
               <FormControl>
-                <RadioGroup onValueChange={field.onChange} className="flex flex-col space-y-1">
+                <RadioGroup className="flex flex-col space-y-1" onValueChange={field.onChange}>
                   <FormItem className="flex items-center space-x-3 space-y-0">
                     <FormControl>
                       <RadioGroupItem value={UserRole.COURT_OWNER} />
@@ -108,10 +108,10 @@ export const SignUpForm = () => {
           )}
         />
 
-        <Button className="w-full" type="submit" disabled={form.formState.isSubmitting}>
+        <Button className="w-full" disabled={form.formState.isSubmitting} type="submit">
           Зареєструватись
         </Button>
       </form>
     </Form>
   );
-};
+}

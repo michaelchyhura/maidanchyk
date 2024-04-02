@@ -1,10 +1,10 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
-type Props = {
+interface Props {
   children: ReactNode;
-};
+}
 
-export const AuthLayout = ({ children }: Props) => {
+export function AuthLayout({ children }: Props) {
   return (
     <div className="flex min-h-full flex-1">
       <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
@@ -13,4 +13,4 @@ export const AuthLayout = ({ children }: Props) => {
       <div className="relative hidden w-0 flex-1 bg-zinc-900 lg:block" />
     </div>
   );
-};
+}

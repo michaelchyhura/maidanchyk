@@ -1,1 +1,1 @@
-export {Newsletter} from './newsletter'
+export { Newsletter } from "./newsletter";

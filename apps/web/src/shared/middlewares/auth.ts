@@ -1,8 +1,8 @@
-import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
-
-import { CustomMiddleware } from "./chain";
-import { getSession } from "../lib/session";
+import type { NextFetchEvent, NextRequest} from "next/server";
+import { NextResponse } from "next/server";
 import { UserRole } from "@maidanchyk/prisma";
+import { getSession } from "../lib/session";
+import type { CustomMiddleware } from "./chain";
 
 const routes = {
   public: ["/auth/sign-in", "/auth/sign-up"],

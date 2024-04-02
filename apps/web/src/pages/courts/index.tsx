@@ -3,20 +3,18 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-  Input,
 } from "@maidanchyk/ui";
 // import { useDebouncedCallback } from "use-debounce";
-import { CourtEvent } from "@maidanchyk/prisma";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import type { CourtEvent } from "@maidanchyk/prisma";
+import { useSearchParams } from "next/navigation";
+import { Filter } from "lucide-react";
 import { trpc } from "../../server/trpc";
 import { withUser } from "../../shared/lib/ssr";
 import { StackedLayout } from "../../widgets/layout";
-import { Filter } from "lucide-react";
 import { IVANO_FRANKIVSK_CITY } from "../../shared/constants/google-places";
 import {
   Pagination,
@@ -73,7 +71,7 @@ export default function Courts() {
   // }, 300);
 
   return (
-    <StackedLayout title="Майданчики" badge={data?.total} spacing>
+    <StackedLayout badge={data?.total} spacing title="Майданчики">
       <div className="flex flex-col gap-x-4 sm:flex-row">
         <div className="hidden w-1/4 sm:block sm:space-y-4">
           <CourtsFilters />
@@ -129,11 +127,11 @@ export default function Courts() {
                     .map((_, index) => (
                       <PaginationItem key={index}>
                         <PaginationLink
-                          isActive={page === index + 1}
                           href={{
                             pathname: "/courts",
                             query: presence({ page: index + 1, query, sort, events }),
-                          }}>
+                          }}
+                          isActive={page === index + 1}>
                           {index + 1}
                         </PaginationLink>
                       </PaginationItem>
@@ -148,11 +146,11 @@ export default function Courts() {
                   {![1, 2].includes(page) && page !== data.totalPages && (
                     <PaginationItem>
                       <PaginationLink
-                        isActive
                         href={{
                           pathname: "/courts",
                           query: presence({ page, query, sort, events }),
-                        }}>
+                        }}
+                        isActive>
                         {page}
                       </PaginationLink>
                     </PaginationItem>
@@ -161,11 +159,11 @@ export default function Courts() {
                   {data.totalPages > 2 && (
                     <PaginationItem>
                       <PaginationLink
-                        isActive={page === data.totalPages}
                         href={{
                           pathname: "/courts",
                           query: presence({ page: data.totalPages, query, sort, events }),
-                        }}>
+                        }}
+                        isActive={page === data.totalPages}>
                         {data.totalPages}
                       </PaginationLink>
                     </PaginationItem>

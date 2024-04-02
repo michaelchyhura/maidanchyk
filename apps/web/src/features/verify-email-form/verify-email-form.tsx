@@ -13,14 +13,14 @@ import {
   InputOTPSlot,
   useToast,
 } from "@maidanchyk/ui";
-import { z } from "zod";
+import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
-import { verifyEmailSchema } from "./lib/validation";
 import { trpc } from "../../server/trpc";
+import { verifyEmailSchema } from "./lib/validation";
 
-export const VerifyEmailForm = () => {
+export function VerifyEmailForm() {
   const router = useRouter();
   const { toast } = useToast();
 
@@ -72,7 +72,7 @@ export const VerifyEmailForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+      <form className="space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
         <FormField
           control={form.control}
           name="code"
@@ -98,9 +98,9 @@ export const VerifyEmailForm = () => {
                 Не отримали повідомлення?{" "}
                 <button
                   className="text-sm font-semibold leading-6 text-orange-600 hover:text-orange-500 disabled:text-orange-300"
-                  type="button"
+                  disabled={isLoading}
                   onClick={handleResend}
-                  disabled={isLoading}>
+                  type="button">
                   Відправити ще раз
                 </button>
               </FormDescription>
@@ -109,10 +109,10 @@ export const VerifyEmailForm = () => {
           )}
         />
 
-        <Button type="submit" disabled={form.formState.isSubmitting}>
+        <Button disabled={form.formState.isSubmitting} type="submit">
           Продовжити
         </Button>
       </form>
     </Form>
   );
-};
+}

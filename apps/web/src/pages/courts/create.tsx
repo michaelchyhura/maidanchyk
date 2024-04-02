@@ -4,7 +4,7 @@ import { StackedLayout } from "../../widgets/layout";
 
 export default function CreateCourt() {
   return (
-    <StackedLayout title="Новий майданчик" spacing>
+    <StackedLayout spacing title="Новий майданчик">
       <CourtForm />
     </StackedLayout>
   );

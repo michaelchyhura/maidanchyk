@@ -1,16 +1,16 @@
 import { Container } from "@maidanchyk/ui";
 import Image from "next/image";
 
-type Props = {
+interface Props {
   className?: string;
-};
+}
 
 export function Footer({ className }: Props) {
   return (
     <footer className={className}>
       <Container>
         <div className="py-16">
-          <Image className="mx-auto" src="/assets/logo-full.png" alt="" height={75} width={120} />
+          <Image alt="" className="mx-auto" height={75} src="/assets/logo-full.png" width={120} />
         </div>
         <div className="flex flex-col items-center border-t border-slate-400/10 py-10 sm:flex-row sm:justify-between">
           {/* <div className="flex gap-x-6">

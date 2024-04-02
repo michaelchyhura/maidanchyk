@@ -68,12 +68,12 @@ export default function MyCourts() {
   };
 
   return (
-    <StackedLayout title="Мої Оголошення" spacing>
+    <StackedLayout spacing title="Мої Оголошення">
       {courts ? (
         courts.items.length ? (
           <>
             <div className="flex justify-end">
-              <Button className="w-full sm:w-auto" asChild>
+              <Button asChild className="w-full sm:w-auto">
                 <Link href="/courts/create">
                   <Plus className="mr-2 h-4 w-4" />
                   Створити нове оголошення
@@ -87,13 +87,13 @@ export default function MyCourts() {
                   <caption className="sr-only">Майданчик</caption>
                   <thead className="sr-only text-left text-sm text-gray-500 sm:not-sr-only">
                     <tr>
-                      <th scope="col" className="py-3 pr-8 font-normal sm:w-2/5 lg:w-1/3">
+                      <th className="py-3 pr-8 font-normal sm:w-2/5 lg:w-1/3" scope="col">
                         Назва
                       </th>
-                      <th scope="col" className="hidden w-1/5 py-3 pr-8 font-normal sm:table-cell">
+                      <th className="hidden w-1/5 py-3 pr-8 font-normal sm:table-cell" scope="col">
                         Ціна
                       </th>
-                      <th scope="col" className="hidden py-3 pr-8 font-normal sm:table-cell">
+                      <th className="hidden py-3 pr-8 font-normal sm:table-cell" scope="col">
                         Дата Публікації
                       </th>
                     </tr>
@@ -104,10 +104,10 @@ export default function MyCourts() {
                         <td className="py-6 pr-8">
                           <div className="flex items-center">
                             <Image
-                              src={court.photos[0].url}
                               alt={`${court.name}'s thumbnail`}
                               className="mr-6 h-16 w-16 rounded-md object-cover object-center"
                               height={64}
+                              src={court.photos[0].url}
                               width={64}
                             />
                             <div>
@@ -126,7 +126,7 @@ export default function MyCourts() {
                           <AlertDialog>
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" className="h-8 w-8 p-0">
+                                <Button className="h-8 w-8 p-0" variant="ghost">
                                   <span className="sr-only">Open menu</span>
                                   <MoreHorizontal className="h-4 w-4" />
                                 </Button>
@@ -157,8 +157,8 @@ export default function MyCourts() {
                               <AlertDialogFooter>
                                 <AlertDialogCancel>Відмінити</AlertDialogCancel>
                                 <AlertDialogAction
-                                  variant="destructive"
-                                  onClick={() => handleDeleteCourt(court.id)}>
+                                  onClick={() => handleDeleteCourt(court.id)}
+                                  variant="destructive">
                                   Видалити
                                 </AlertDialogAction>
                               </AlertDialogFooter>
@@ -172,7 +172,7 @@ export default function MyCourts() {
               </div>
             </div>
 
-            {!!courts?.totalPages && (
+            {!!courts.totalPages && (
               <Pagination className="py-12">
                 <PaginationContent>
                   {page !== 1 && (
@@ -188,8 +188,8 @@ export default function MyCourts() {
                     .map((_, index) => (
                       <PaginationItem key={index}>
                         <PaginationLink
-                          isActive={page === index + 1}
-                          href={{ pathname: "/courts/mine", query: { page: index + 1 } }}>
+                          href={{ pathname: "/courts/mine", query: { page: index + 1 } }}
+                          isActive={page === index + 1}>
                           {index + 1}
                         </PaginationLink>
                       </PaginationItem>
@@ -204,11 +204,11 @@ export default function MyCourts() {
                   {![1, 2].includes(page) && page !== courts.totalPages && (
                     <PaginationItem>
                       <PaginationLink
-                        isActive
                         href={{
                           pathname: "/courts/mine",
                           query: { page: courts.totalPages },
-                        }}>
+                        }}
+                        isActive>
                         {page}
                       </PaginationLink>
                     </PaginationItem>
@@ -217,11 +217,11 @@ export default function MyCourts() {
                   {courts.totalPages > 2 && (
                     <PaginationItem>
                       <PaginationLink
-                        isActive={page === courts.totalPages}
                         href={{
                           pathname: "/courts/mine",
                           query: { page: courts.totalPages },
-                        }}>
+                        }}
+                        isActive={page === courts.totalPages}>
                         {courts.totalPages}
                       </PaginationLink>
                     </PaginationItem>
@@ -250,7 +250,7 @@ export default function MyCourts() {
 
 export const getServerSideProps = withUser();
 
-const Loader = () => {
+function Loader() {
   return (
     <div className="space-y-20">
       <div>
@@ -258,13 +258,13 @@ const Loader = () => {
           <caption className="sr-only">Court</caption>
           <thead className="sr-only text-left text-sm text-gray-500 sm:not-sr-only">
             <tr>
-              <th scope="col" className="py-3 pr-8 font-normal sm:w-2/5 lg:w-1/3">
+              <th className="py-3 pr-8 font-normal sm:w-2/5 lg:w-1/3" scope="col">
                 Court
               </th>
-              <th scope="col" className="hidden w-1/5 py-3 pr-8 font-normal sm:table-cell">
+              <th className="hidden w-1/5 py-3 pr-8 font-normal sm:table-cell" scope="col">
                 Price
               </th>
-              <th scope="col" className="hidden py-3 pr-8 font-normal sm:table-cell">
+              <th className="hidden py-3 pr-8 font-normal sm:table-cell" scope="col">
                 Published at
               </th>
             </tr>
@@ -297,9 +297,9 @@ const Loader = () => {
       </div>
     </div>
   );
-};
+}
 
-const EmptyState = () => {
+function EmptyState() {
   return (
     <div className="space-y-4 rounded-md border border-dashed border-zinc-200 p-12 text-center">
       <FolderPlus className="mx-auto h-12 w-12 text-zinc-400" />
@@ -308,7 +308,7 @@ const EmptyState = () => {
         <p className="text-sm text-zinc-500">Розпочніть, створивши нове оголошення</p>
       </div>
 
-      <Button size="sm" asChild>
+      <Button asChild size="sm">
         <Link href="/courts/create">
           <Plus className="mr-2 h-4 w-4" />
           Створити нове оголошення
@@ -316,4 +316,4 @@ const EmptyState = () => {
       </Button>
     </div>
   );
-};
+}

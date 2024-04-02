@@ -16,11 +16,11 @@ import { Settings, LogOut } from "lucide-react";
 import { useAuth } from "../../shared/providers/auth";
 import { getInitials } from "../../shared/lib/strings";
 
-type Props = {
+interface Props {
   className?: string;
-};
+}
 
-export const UserMenu = ({ className }: Props) => {
+export function UserMenu({ className }: Props) {
   const { user } = useAuth();
 
   if (!user) {
@@ -34,19 +34,20 @@ export const UserMenu = ({ className }: Props) => {
           className={cn(
             "relative ml-3 flex max-w-xs items-center rounded-full bg-white text-sm hover:outline-none hover:ring-2 hover:ring-orange-500 hover:ring-offset-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2",
             className,
-          )}>
+          )}
+          type="button">
           <span className="absolute -inset-1.5" />
           <span className="sr-only">Open user menu</span>
           <Avatar className="h-10 w-10">
-            <AvatarImage src={user.photo || undefined} alt="" />
+            <AvatarImage alt="" src={user.photo || undefined} />
             <AvatarFallback>{getInitials(user.name || user.email)}</AvatarFallback>
           </Avatar>
         </button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent className="w-56" side="bottom" align="end">
+      <DropdownMenuContent align="end" className="w-56" side="bottom">
         <DropdownMenuLabel>
-          {user.name && <p className="font-medium text-gray-800">{user.name}</p>}
+          {user.name ? <p className="font-medium text-gray-800">{user.name}</p> : null}
           <p className="break-all text-sm font-medium text-gray-500">{user.email}</p>
         </DropdownMenuLabel>
 
@@ -72,4 +73,4 @@ export const UserMenu = ({ className }: Props) => {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-};
+}

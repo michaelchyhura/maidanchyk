@@ -16,7 +16,7 @@ export default function EditCourt() {
   });
 
   return (
-    <StackedLayout title="Редагувати Майданчик" spacing>
+    <StackedLayout spacing title="Редагувати Майданчик">
       {court ? (
         <CourtForm court={court} />
       ) : (

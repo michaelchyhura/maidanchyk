@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.7.18",
+    "@hookform/resolvers": "^3.3.4",
     "@maidanchyk/prisma": "*",
     "@maidanchyk/ui": "*",
     "@tanstack/react-query": "^4.33.0",
