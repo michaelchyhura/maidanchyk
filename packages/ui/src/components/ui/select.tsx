@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as SelectPrimitive from "@radix-ui/react-select";
-import { CaretSortIcon } from "@radix-ui/react-icons";
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import { CheckIcon, ChevronDown, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { cn } from "../../lib/utils";
 
 const Select = SelectPrimitive.Root;
@@ -23,7 +22,7 @@ const SelectTrigger = React.forwardRef<
     {...props}>
     {children}
     <SelectPrimitive.Icon asChild>
-      <CaretSortIcon className="h-4 w-4 opacity-50" />
+      <ChevronDown className="h-4 w-4 opacity-50" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ));

@@ -26,7 +26,7 @@ export function GoogleMap({
   const _defaultCenter = useMemo(() => defaultCenter, []);
 
   return (
-    <div className="relative overflow-hidden rounded-md" style={{ height, width: "100%" }}>
+    <div className="relative overflow-hidden rounded-md shadow" style={{ height, width: "100%" }}>
       {mode === "pick-location" && (
         <div className="absolute left-1/2 top-1/2 z-50">
           <div className="transform-all -ml-[15px] -mt-[35px] h-[30px] w-[30px] -rotate-45 rounded-[50%_50%_50%_0] border border-white bg-red-400" />
