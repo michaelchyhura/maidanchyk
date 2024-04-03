@@ -21,7 +21,8 @@ model User {
   workosId      String   @unique
   emailVerified Boolean  @default(false)
   role          UserRole
-  courts        Court[]
+  courts        Court[]  @relation(name: "courts")
+  savedCourts   Court[]  @relation(name: "savedCourts")
 }
 
 enum UserRole {
@@ -35,7 +36,7 @@ model Court {
   updatedAt     DateTime      @default(now()) @updatedAt
   name          String
   photos        CourtAsset[]
-  description   String        @db.VarChar(255)
+  description   String
   price         Float
   events        CourtEvent[]
   city          CourtCity     @relation(fields: [cityId], references: [id])
@@ -46,7 +47,8 @@ model Court {
   contactEmail  String
   contactPhone  String
   userId        String
-  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User          @relation(name: "courts", fields: [userId], references: [id], onDelete: Cascade)
+  savedBy       User[]        @relation(name: "savedCourts")
 }
 
 model CourtAsset {
