@@ -3,11 +3,8 @@ import { CourtEvent } from "@maidanchyk/prisma";
 import { PHONE_REG_EXP } from "../../../shared/lib/regexp";
 
 export const courtSchema = z.object({
-  name: z.string().min(1, "Обов'язкове поле").max(100, "Назва повинна бути менше ніж 100 символів"),
-  description: z
-    .string()
-    .min(1, "Обов'язкове поле")
-    .max(255, "Опис повинен бути менше ніж 255 символів"),
+  name: z.string().min(1, "Обов'язкове поле").max(255, "Назва повинна бути менше ніж 255 символів"),
+  description: z.string().min(1, "Обов'язкове поле"),
   price: z.string().min(1, "Обов'язкове поле"),
   events: z
     .array(

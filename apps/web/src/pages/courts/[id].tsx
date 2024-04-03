@@ -3,7 +3,6 @@ import {
   Avatar,
   AvatarFallback,
   Badge,
-  Button,
   Card,
   CardContent,
   CardDescription,
@@ -17,18 +16,19 @@ import {
   GoogleMap,
   GoogleMapMarker,
   Skeleton,
+  cn,
 } from "@maidanchyk/ui";
-import { ArrowLeft, MapPin } from "lucide-react";
+import { Heart, MapPin } from "lucide-react";
 import { useRouter } from "next/router";
-import dayjs from "dayjs";
 import Image from "next/image";
 import type { Court, CourtAsset, CourtLocation } from "@maidanchyk/prisma";
 import { PhotoProvider, PhotoView } from "react-photo-view";
+import { useState } from "react";
 import { trpc } from "../../server/trpc";
 import { withUser } from "../../shared/lib/ssr";
 import { eventTypeToLabel, getInitials } from "../../shared/lib/strings";
-import { useModal } from "../../shared/hooks/use-modal";
 import { StackedLayout } from "../../widgets/layout";
+import { useMediaQuery } from "../../shared/hooks";
 
 export default function ViewCourt() {
   const router = useRouter();
@@ -37,27 +37,28 @@ export default function ViewCourt() {
 
   return (
     <StackedLayout spacing>
-      <div>
+      {/* <div>
         <Button onClick={router.back} variant="ghost">
           <ArrowLeft className="mr-2 h-4 w-4" /> Назад
         </Button>
-      </div>
+      </div> */}
 
       {court ? (
-        <div className="flex flex-col gap-4 lg:flex-row">
-          <div className="flex flex-col gap-4 lg:w-8/12">
-            <PhotosSection court={court} />
-            <MainInformationSection className="lg:hidden" court={court} />
-            <AboutSection court={court} />
-            <ContactPersonSection className="lg:hidden" court={court} />
-            <LocationSection court={court} />
-          </div>
+        <>
+          <MainInformationSection court={court} />
+          <PhotosSection court={court} />
 
-          <div className="hidden flex-col gap-4 lg:flex lg:w-4/12">
-            <MainInformationSection court={court} />
-            <ContactPersonSection court={court} />
+          <div className="flex flex-col gap-4 lg:flex-row-reverse">
+            <div className="flex flex-col gap-4 lg:w-4/12">
+              <ContactPersonSection court={court} />
+            </div>
+
+            <div className="flex flex-col gap-4 lg:w-8/12">
+              <AboutSection court={court} />
+              <LocationSection court={court} />
+            </div>
           </div>
-        </div>
+        </>
       ) : (
         <Loader />
       )}
@@ -74,13 +75,15 @@ function PhotosSection({
     photos: Omit<CourtAsset, "createdAt" | "updatedAt">[];
   };
 }) {
+  const md = useMediaQuery(768);
+
   return (
     <PhotoProvider>
       <Carousel className="w-full max-w-full overflow-hidden rounded-md">
         <CarouselContent>
           {court.photos.map((photo) => (
             <CarouselItem key={photo.id}>
-              <AspectRatio ratio={16 / 10}>
+              <AspectRatio ratio={md ? 30 / 10 : 16 / 10}>
                 <PhotoView src={photo.url}>
                   <Image
                     alt={photo.pathname}
@@ -101,33 +104,52 @@ function PhotosSection({
 }
 
 function MainInformationSection({
-  className,
   court,
 }: {
-  className?: string;
-  court: Omit<Court, "createdAt" | "updatedAt"> & { createdAt: string; updatedAt: string };
+  court: Omit<Court, "createdAt" | "updatedAt"> & { savedBy: { id: string }[] };
 }) {
-  const { isOpen: phoneVisible, open: showPhone } = useModal(false);
+  const [saved, setSaved] = useState(!!court.savedBy.length);
+
+  const { mutateAsync: save } = trpc.courts.save.useMutation();
+  const { mutateAsync: unsave } = trpc.courts.unsave.useMutation();
+
+  const handleToggleSaved = async () => {
+    try {
+      setSaved((state) => !state);
+
+      if (saved) {
+        await unsave({ id: court.id });
+      } else {
+        await save({ id: court.id });
+      }
+    } catch (error) {
+      setSaved((state) => !state);
+    }
+  };
 
   return (
-    <Card className={className}>
-      <CardHeader className="pb-2">
-        <CardTitle>{court.name}</CardTitle>
-        <CardDescription>{dayjs(court.createdAt).format("ll")}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p className="mb-4 text-xl font-semibold">{court.price}₴</p>
-        {phoneVisible ? (
-          <Button asChild className="w-full">
-            <a href={`tel:${court.contactPhone}`}>{court.contactPhone}</a>
-          </Button>
-        ) : (
-          <Button className="w-full" onClick={showPhone}>
-            Показати телефон
-          </Button>
-        )}
-      </CardContent>
-    </Card>
+    <div>
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight first:mt-0 sm:text-3xl">
+          {court.name}
+        </h1>
+        <button
+          className="flex h-10 w-10 min-w-[40px] items-center justify-center rounded-full bg-white transition hover:outline-none hover:ring-2 hover:ring-orange-500 hover:ring-offset-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+          onClick={handleToggleSaved}
+          type="button">
+          <span className="sr-only">
+            {saved ? "Видалити зі збереженого" : "Додати до збереженого"}
+          </span>
+          <Heart
+            aria-hidden="true"
+            className={cn("h-6 w-6 translate-y-[1px] text-orange-600 transition", {
+              "fill-orange-600": saved,
+            })}
+          />
+        </button>
+      </div>
+      <p className="text-xl font-semibold tracking-tight text-orange-600">{court.price}₴</p>
+    </div>
   );
 }
 
@@ -191,15 +213,18 @@ function ContactPersonSection({
         <CardTitle>Контактна особа</CardTitle>
       </CardHeader>
       <CardContent className="flex">
-        <div className="mr-4 flex-shrink-0 self-center">
+        <div className="mr-4 flex-shrink-0 self-start">
           <Avatar className="h-12 w-12">
             <AvatarFallback>{getInitials(court.contactPerson)}</AvatarFallback>
           </Avatar>
         </div>
-        <div>
+        <div className="flex flex-col">
           <h4 className="font-bold">{court.contactPerson}</h4>
-          <a className="text-sm text-zinc-500" href={`mailto:${court.contactEmail}`}>
+          <a className="text-sm hover:text-orange-600" href={`mailto:${court.contactEmail}`}>
             {court.contactEmail}
+          </a>
+          <a className="text-sm hover:text-orange-600" href={`tel:${court.contactPhone}`}>
+            {court.contactPhone}
           </a>
         </div>
       </CardContent>
@@ -209,21 +234,21 @@ function ContactPersonSection({
 
 function Loader() {
   return (
-    <div className="flex flex-col gap-4 lg:flex-row">
-      <div className="flex flex-col gap-4 lg:w-8/12">
-        <AspectRatio ratio={16 / 10}>
-          <Skeleton className="h-full w-full rounded-md" />
-        </AspectRatio>
-        <Skeleton className="h-[150px] w-full rounded-md lg:hidden" />
-        <Skeleton className="h-[200px] w-full rounded-md" />
-        <Skeleton className="h-[150px] w-full rounded-md lg:hidden" />
-        <Skeleton className="h-[500px] w-full rounded-md" />
+    <>
+      <Skeleton className="h-[40px] w-full rounded-md sm:w-2/3" />
+      <Skeleton className="h-[28px] w-1/5 rounded-md" />
+      <AspectRatio ratio={30 / 10}>
+        <Skeleton className="h-full w-full rounded-md" />
+      </AspectRatio>
+      <div className="flex flex-col gap-4 lg:flex-row-reverse">
+        <div className="flex flex-col gap-4 lg:w-4/12">
+          <Skeleton className="h-[150px] w-full rounded-md" />
+        </div>
+        <div className="flex flex-col gap-4 lg:w-8/12">
+          <Skeleton className="h-[200px] w-full rounded-md" />
+          <Skeleton className="h-[500px] w-full rounded-md" />
+        </div>
       </div>
-
-      <div className="hidden flex-col gap-4 lg:flex lg:w-4/12">
-        <Skeleton className="h-[200px] w-full rounded-md" />
-        <Skeleton className="h-[150px] w-full rounded-md" />
-      </div>
-    </div>
+    </>
   );
 }

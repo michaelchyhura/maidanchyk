@@ -73,6 +73,14 @@ const list = publicProcedure
           photos: {
             take: 1,
           },
+          savedBy: {
+            where: {
+              id: ctx.session.userId,
+            },
+            select: {
+              id: true,
+            },
+          },
           events: true,
           createdAt: true,
         },
@@ -100,6 +108,14 @@ const get = publicProcedure
         city: true,
         location: true,
         photos: true,
+        savedBy: {
+          where: {
+            id: ctx.session.userId,
+          },
+          select: {
+            id: true,
+          },
+        },
       },
     });
   });
@@ -110,11 +126,8 @@ const create = protectedProcedure
       name: z
         .string()
         .min(1, "Name is required")
-        .max(100, "Name should be less then 100 characters long"),
-      description: z
-        .string()
-        .min(1, "Description is required")
-        .max(255, "Description should be less then 255 characters long"),
+        .max(255, "Name should be less then 255 characters long"),
+      description: z.string().min(1, "Description is required"),
       price: z.string().min(1, "Price is required"),
       events: z
         .array(
@@ -221,11 +234,8 @@ const update = protectedProcedure
         name: z
           .string()
           .min(1, "Name is required")
-          .max(100, "Name should be less then 100 characters long"),
-        description: z
-          .string()
-          .min(1, "Description is required")
-          .max(255, "Description should be less then 255 characters long"),
+          .max(255, "Name should be less then 255 characters long"),
+        description: z.string().min(1, "Description is required"),
         price: z.string().min(1, "Price is required"),
         events: z
           .array(
@@ -335,4 +345,34 @@ const del = protectedProcedure.input(z.object({ id: z.string() })).mutation(({ c
   });
 });
 
-export const courts = t.router({ list, get, create, update, delete: del });
+const save = protectedProcedure.input(z.object({ id: z.string() })).mutation(({ ctx, input }) => {
+  return ctx.prisma.user.update({
+    where: {
+      id: ctx.session.userId,
+    },
+    data: {
+      savedCourts: {
+        connect: {
+          id: input.id,
+        },
+      },
+    },
+  });
+});
+
+const unsave = protectedProcedure.input(z.object({ id: z.string() })).mutation(({ ctx, input }) => {
+  return ctx.prisma.user.update({
+    where: {
+      id: ctx.session.userId,
+    },
+    data: {
+      savedCourts: {
+        disconnect: {
+          id: input.id,
+        },
+      },
+    },
+  });
+});
+
+export const courts = t.router({ list, get, create, update, delete: del, save, unsave });

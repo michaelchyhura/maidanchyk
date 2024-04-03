@@ -54,6 +54,7 @@ export default function MyCourts() {
 
   const handleDeleteCourt = async (id: string) => {
     try {
+      // TODO: delete court assets from Vercel blob
       await deleteCourt({ id });
       await refetch();
 
