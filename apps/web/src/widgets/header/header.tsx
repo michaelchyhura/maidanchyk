@@ -42,8 +42,25 @@ export function Header() {
           href: "/courts",
         },
         {
+          name: "Збережені",
+          href: "/courts/saved",
+        },
+        {
           name: "Мої Оголошення",
           href: "/courts/mine",
+        },
+      ];
+    }
+
+    if(user?.role === UserRole.PLAYER){
+      return [
+        {
+          name: "Майданчики",
+          href: "/courts",
+        },
+        {
+          name: "Збережені",
+          href: "/courts/saved",
         },
       ];
     }

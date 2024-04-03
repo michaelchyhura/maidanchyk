@@ -16,18 +16,8 @@ import { trpc } from "../../server/trpc";
 import { withUser } from "../../shared/lib/ssr";
 import { StackedLayout } from "../../widgets/layout";
 import { IVANO_FRANKIVSK_CITY } from "../../shared/constants/google-places";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "../../shared/ui";
 import { CourtsFilters } from "../../features/courts-filters";
-import { CourtsGridList } from "../../features/courts-grid-list";
-import { presence } from "../../shared/lib/objects";
+import { CourtGridPagination, CourtsGridList } from "../../features/courts-grid-list";
 
 export default function Courts() {
   const searchParams = useSearchParams();
@@ -107,81 +97,13 @@ export default function Courts() {
             /> */}
           </div>
 
-          <CourtsGridList courts={courts} loading={isLoading}>
-            {!!data?.totalPages && (
-              <Pagination className="py-12">
-                <PaginationContent>
-                  {page !== 1 && (
-                    <PaginationItem>
-                      <PaginationPrevious
-                        href={{
-                          pathname: "/courts",
-                          query: presence({ page: page - 1, query, sort, events }),
-                        }}
-                      />
-                    </PaginationItem>
-                  )}
-
-                  {Array.from({ length: data.totalPages })
-                    .slice(0, 2)
-                    .map((_, index) => (
-                      <PaginationItem key={index}>
-                        <PaginationLink
-                          href={{
-                            pathname: "/courts",
-                            query: presence({ page: index + 1, query, sort, events }),
-                          }}
-                          isActive={page === index + 1}>
-                          {index + 1}
-                        </PaginationLink>
-                      </PaginationItem>
-                    ))}
-
-                  {[1, 2, data.totalPages].includes(page) && data.totalPages > 3 && (
-                    <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  )}
-
-                  {![1, 2].includes(page) && page !== data.totalPages && (
-                    <PaginationItem>
-                      <PaginationLink
-                        href={{
-                          pathname: "/courts",
-                          query: presence({ page, query, sort, events }),
-                        }}
-                        isActive>
-                        {page}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )}
-
-                  {data.totalPages > 2 && (
-                    <PaginationItem>
-                      <PaginationLink
-                        href={{
-                          pathname: "/courts",
-                          query: presence({ page: data.totalPages, query, sort, events }),
-                        }}
-                        isActive={page === data.totalPages}>
-                        {data.totalPages}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )}
-
-                  {page !== data.totalPages && (
-                    <PaginationItem>
-                      <PaginationNext
-                        href={{
-                          pathname: "/courts",
-                          query: presence({ page: page + 1, query, sort, events }),
-                        }}
-                      />
-                    </PaginationItem>
-                  )}
-                </PaginationContent>
-              </Pagination>
-            )}
+          <CourtsGridList cols={3} courts={courts} loading={isLoading}>
+            <CourtGridPagination
+              page={page}
+              pathname="/courts"
+              query={{ query, sort, events }}
+              totalPages={data?.totalPages}
+            />
           </CourtsGridList>
         </div>
       </div>

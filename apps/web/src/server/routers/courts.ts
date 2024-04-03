@@ -31,6 +31,7 @@ const list = publicProcedure
         )
         .optional(),
       userId: z.string().optional(),
+      saved: z.boolean().optional(),
     }),
   )
   .query(async ({ ctx, input }) => {
@@ -52,6 +53,10 @@ const list = publicProcedure
 
     if (input.userId) {
       Object.assign(where, { userId: input.userId });
+    }
+
+    if (input.saved) {
+      Object.assign(where, { savedBy: { some: { id: ctx.session.userId } } })
     }
 
     const [items, count] = await ctx.prisma.$transaction([

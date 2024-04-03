@@ -12,6 +12,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { trpc } from "../../../server/trpc";
+import { emit } from "../../../shared/hooks";
 
 interface Props {
   court: Pick<Court, "id" | "events" | "name" | "price" | "description"> & {
@@ -36,6 +37,8 @@ export function CourtGridItem({ court }: Props) {
       } else {
         await save({ id: court.id });
       }
+
+      emit("courts:saved/unsaved");
     } catch (error) {
       setSaved((state) => !state);
     }
@@ -44,7 +47,7 @@ export function CourtGridItem({ court }: Props) {
   return (
     <li className="relative">
       <button
-        className="absolute right-4 top-4 z-10 flex h-14 w-14 items-center justify-center rounded-full bg-white transition hover:outline-none hover:ring-2 hover:ring-orange-500 hover:ring-offset-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 sm:h-10 sm:w-10"
+        className="absolute right-4 top-4 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white transition hover:outline-none hover:ring-2 hover:ring-orange-500 hover:ring-offset-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 sm:h-10 sm:w-10"
         onClick={handleToggleSaved}
         type="button">
         <span className="sr-only">
@@ -52,7 +55,7 @@ export function CourtGridItem({ court }: Props) {
         </span>
         <Heart
           aria-hidden="true"
-          className={cn("h-8 w-8 translate-y-[1px] text-orange-600 transition sm:h-6 sm:w-6", {
+          className={cn("h-7 w-7 translate-y-[1px] text-orange-600 transition sm:h-6 sm:w-6", {
             "fill-orange-600": saved,
           })}
         />
